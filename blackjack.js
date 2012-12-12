@@ -53,6 +53,8 @@ function getOnlineUsers(){
 	
 		$("#table_choice").fadeIn();
 		
+		$("#user_info").fadeIn();	
+		
 		$.getJSON('php/get-online.php',function(data){
 			
 			$('#users tr').html("");
@@ -166,6 +168,7 @@ function displayCard(player,cards){
 
 function displayTable(){
 	
+
 	
 	clearInterval(refreshTables);
 	clearInterval(refreshUsers);

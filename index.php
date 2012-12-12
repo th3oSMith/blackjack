@@ -124,7 +124,7 @@
 	
 	</div>
 	<footer>
-	Copyright : Rezo
+	Copyright : Unplug
 	</footer>
 	
 	<div id="fond" onClick="quitMsg()"></div>
