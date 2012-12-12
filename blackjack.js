@@ -16,6 +16,7 @@ function connexion(){
 		if (data['error']==0){	
 			$("#connexion").fadeOut();
 			connexionTest=true;
+			$("#user_info").fadeIn();
 		}
 		else{
 			$("#password_error").fadeIn();

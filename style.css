@@ -48,6 +48,12 @@
 
 }
 
+#user_info{
+	
+	display:none;
+
+}
+
 #user_area a{
 	color : white;
 	font-weight: bold;
