@@ -1,7 +1,7 @@
 #connexion{
 
 	text-align:center;
-	background-color:#BF7130;
+	background: url('images/wood.png') repeat-x repeat-y;
 	border-radius:8px;
 }
 
@@ -26,7 +26,7 @@
 	display:inline-block;
 	width:90%;
 	height:680px;
-	background-color:#269926;
+	background: url('images/pool.png') repeat-x repeat-y;
 	padding-top:20px;
 
 
@@ -36,7 +36,7 @@
 	
 	display:inline-block;
 	width:90%;
-	background-color:#BF7130;
+	background: url('images/wood.png') repeat;
 	text-align:right;
 	padding-top:3px;
 	padding-bottom:3px;
