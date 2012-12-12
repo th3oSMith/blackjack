@@ -370,14 +370,13 @@ table {
 	cellspacing:0px;
 	border:1px solid black;
 	border-collapse: collapse;
-	background-color:#FFB273;
-
+	background: url('images/wood_light.png') repeat;
 }
 
 caption {
 	
 	text-weight:bold;
-	background-color:#FF7400;
+	background: url('images/wood.png') repeat;
 	border-bottom:1px solid black;
 
 }
