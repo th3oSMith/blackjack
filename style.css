@@ -1,7 +1,8 @@
 #connexion{
 
 	text-align:center;
-	background: url('images/wood.png') repeat-x repeat-y;
+	color : white;
+	background: url('images/wood.png') repeat;
 	border-radius:8px;
 }
 
@@ -26,7 +27,7 @@
 	display:inline-block;
 	width:90%;
 	height:680px;
-	background: url('images/pool.png') repeat-x repeat-y;
+	background: url('images/pool.png') repeat;
 	padding-top:20px;
 
 
@@ -333,7 +334,7 @@ body{
 
 footer{
 
-	background-color:#BF7130;
+	background: url('images/wood.png') repeat;
 	width:90%;
 	display:inline-block;
 	border-radius:0px 0px 10px 10px;
