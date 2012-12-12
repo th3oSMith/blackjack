@@ -165,7 +165,8 @@
 
 	width:95%;
 	height:60px;
-	background-color:#A64B00;
+	background: url('images/wood.png');
+	color : white;
 	padding-top:10px;
 	border:3px solid #632C00;
 	border-radius:10px;
@@ -183,7 +184,8 @@
 	
 	width:95%;
 	height:25px;
-	background-color:#A64B00;
+	background: url('images/wood.png') repeat;
+	color : white;
 	text-align:center;
 	padding-top:3px;
 	font-weight:bold;
@@ -374,7 +376,7 @@ table {
 }
 
 caption {
-	
+	color : white;
 	text-weight:bold;
 	background: url('images/wood.png') repeat;
 	border-bottom:1px solid black;
@@ -382,7 +384,8 @@ caption {
 }
 
 #actions input {
-
+	
+	color : white;
 	background-color:#BF7130;
 	border-radius:4px;
 	border:1px solid black;
@@ -390,7 +393,8 @@ caption {
 }
 
 #actions #rules_input {
-
+	
+	color : black;
 	background-color:silver;
 
 }
