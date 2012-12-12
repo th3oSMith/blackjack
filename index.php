@@ -8,10 +8,9 @@
     </head>
 
     <body>
-    <div id="head">
-    <header><p>Welcome to the Casino</p></header>
-    </div>
+    <header><img src="images/banner.png" alt="Bienvenue au Casino Unplug !" /></header>
     <div id="user_area">
+    	<span id="user_info">
     
     <span>
     <span id="user_area_login"></span>
@@ -20,6 +19,7 @@
     jetons - 
     </span>
     <a href="#" onClick="logout()">Déconnexion</a>
+			</span>    
     </div>
     
     <div id="content">
