@@ -25,7 +25,7 @@
 	
 	display:inline-block;
 	width:90%;
-	height:650px;
+	height:680px;
 	background-color:#269926;
 	padding-top:20px;
 
@@ -155,7 +155,7 @@
 #actions {
 
 	width:95%;
-	height:50px;
+	height:60px;
 	background-color:#A64B00;
 	padding-top:10px;
 	border:3px solid #632C00;
@@ -260,6 +260,15 @@
 	margin-left:-200px;
 	height:200px;
 	margin-top:-100px;
+
+}
+
+#rules{
+
+	width:800px;
+	margin-left:-400px;
+	height:600px;
+	margin-top:-300px;
 
 }
 
@@ -369,5 +378,11 @@ caption {
 	background-color:#BF7130;
 	border-radius:4px;
 	border:1px solid black;
+
+}
+
+#actions #rules_input {
+
+	background-color:silver;
 
 }

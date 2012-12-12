@@ -211,7 +211,6 @@ function listen(){
 						
 						
 						if (data['pot']==0){
-							alert(data['pot']);
 							kick();
 						}
 						
@@ -508,6 +507,7 @@ function quitMsg(){
 	
 	$("#fond").fadeOut();
 	$("#message_fenetre.fenetre").fadeOut();
+	$("#rules.fenetre").fadeOut();
 	
 }
 
@@ -586,3 +586,10 @@ function setBet(){
 	
 
  }
+
+function rules(){
+	
+	$("#fond").fadeIn();
+	$("#rules.fenetre").fadeIn();
+	
+}

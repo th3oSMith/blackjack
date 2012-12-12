@@ -109,6 +109,9 @@
 	<input type="submit" id="double" onClick="jouer(2)" value="Double"/>
 	<input type="submit" id="reste"  onCLick="jouer(3)" value="Reste"/>
 	<input type="submit" id="reset"  onCLick="reset()" value="Nouvelle partie"/>
+	<br/>
+	<input type="submit" id="rules_input"  onCLick="rules()" value="Afficher les règles"/>
+	
 	</div>
 	
 	
@@ -130,5 +133,36 @@
 	<span id="prompt_text"></span><br/><br/>
 	<form onsubmit=setBet()>Mise : <input type="texte" id="prompt_value"> <input type="submit" value="Valider"></form>
 	</div>
+    <div id="rules" onClick="quitMsg()" class="fenetre">
+    <h2>Règles</h2>
+    
+    <p>Le but du jeu est de s'approcher le plus près de 21 points sans dépasser. Le joueur peut demander autant de cartes qu'il le souhaite.</p>
+    
+    <br/>
+    <p>Valeur des cartes :</p>
+    
+    <ul>
+    
+    <li>Cartes simples : valeur faciale</li>
+    <li>Figure : 10 points</li>
+    <li>As : 11 ou 1 point</li>
+    
+    </ul>
+
+	<br/>
+    <p>Actions possibles :</p>
+
+	<ul>
+	<li>Carte : demander une nouvelle carte</li>
+	<li>Double : demander une carte, doubler la mise et passer au joueur suivant</li>
+	<li>Reste : paser au joueur suivant</li>
+	
+	</ul>
+	
+	<br/>
+	<p>À l'issue de la partie les joueurs ayant plus de points que le croupier remporte le double de leur mise</p>
+	
+    </div>
+    
     </body>
 </html>
