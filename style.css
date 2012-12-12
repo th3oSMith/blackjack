@@ -320,7 +320,7 @@ header {
 	margin-top:5px;
 	width:90%;
 	height:95px;
-	background-color:#062c06;
+	background: url('images/pool_dark.png') repeat;
 	display:inline-block;
 	font-size:30px;
 	border-radius:20px 20px 0px 0px;
