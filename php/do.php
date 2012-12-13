@@ -227,13 +227,15 @@ if ($joueur==$table['table_mvt']){
 			
 			$gain=0;
 			
+			if ($score_joueur<22){
+			
 			if ($score_croupier>21){ //Si le croupier a brulé
 				
 				$gain=2*$user['user_mise'];
 				
 			}else{ //si le croupier est en course
 				
-				if ($score_joueur<22){ //Si le joueur est en course
+				 //Si le joueur est en course
 				
 
 						

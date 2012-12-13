@@ -357,6 +357,14 @@ function getMains(){
 			});
 			
 		if (joueur==1 && phase==-2 ){
+		
+		//On retarde l'apparition du bouton le temps que la partie s'initialise
+		var clear = setTimeout(function() {
+				$("#message").fadeIn();
+				},2000);
+			
+		
+		
 		$("#start").fadeIn(0);
 		}else
 		{
@@ -427,10 +435,13 @@ function jouer(action){
 			case 2:
 			$.getJSON("php/double.php",function(data){
 				
+				
+				
 				if (data['error']==0){
 
 					jouer(1);
-					jouer(3);
+					setTimeout(function() {jouer(3);},200);
+					
 					
 				}else{
 					
@@ -484,7 +495,9 @@ function message(msg,temp){
 			var clear = setTimeout(function() {
 				$("#message").fadeOut();
 				},2000);
-			})};
+			})
+			
+			};
 	
 }
 
@@ -554,40 +567,46 @@ function unbet(){
 
 function setBet(){
 	
-	
-	
-	if (parseInt($("#prompt_value").val())>0){
-
-		unbet()
-		$.post("php/do.php",{mise : parseInt($("#prompt_value").val())},function(data){
-						
-						
-						if(data['error']==0){
-							
-							//$("#mise"+joueur).val(data['mise']);
-							
-						}else{
-							
-							switch (data['error']){
-								
-								case 1:
-								bet("Vous n'avez pas assez de jetons pour miser");
-								break;
-								
-								case 2:
-								bet("Hep Hep Hep");
-								break;
-							
-							}
-						}
-					
-						
-						
-						
-						},'json');
+	if (phase!= -1){
+		
+		unbet();
+		
 		}
- 
 	
+	else{
+	
+		if (parseInt($("#prompt_value").val())>0){
+
+			unbet()
+			$.post("php/do.php",{mise : parseInt($("#prompt_value").val())},function(data){
+							
+							
+							if(data['error']==0){
+								
+								//$("#mise"+joueur).val(data['mise']);
+								
+							}else{
+								
+								switch (data['error']){
+									
+									case 1:
+									bet("Vous n'avez pas assez de jetons pour miser");
+									break;
+									
+									case 2:
+									bet("Hep Hep Hep");
+									break;
+								
+								}
+							}
+						
+							
+							
+							
+							},'json');
+			}
+	 
+	}
 
  }
 

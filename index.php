@@ -131,7 +131,7 @@
 	<div id="message_fenetre" onClick="quitMsg()" class="fenetre"><p id="message_text"></p></div>
 	<div id="prompt" class="fenetre">
 	<span id="prompt_text"></span><br/><br/>
-	<form onsubmit=setBet()>Mise : <input type="texte" id="prompt_value"> <input type="submit" value="Valider"></form>
+	<form action="javascript:setBet()">Mise : <input autocomplete="off" type="texte" id="prompt_value"> <input type="submit" value="Valider"></form>
 	</div>
     <div id="rules" onClick="quitMsg()" class="fenetre">
     <h2>Règles</h2>
