@@ -84,4 +84,23 @@ function absent($db,$table,$timeout){
 }
 
 
+function resetChallenge($db) {
+	
+	if (isset($_SESSION['target']))
+	
+	{
+		
+	$up=$db->prepare("UPDATE users SET user_challenger=0, user_status=0 WHERE user_id=:id");
+	
+	$up->execute(array(
+				"id"=>$_SESSION['target']
+				));
+		
+	unset($_SESSION['target']);
+	
+		}
+	
+	
+}
+
 ?>

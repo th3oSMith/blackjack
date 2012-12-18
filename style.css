@@ -291,6 +291,24 @@
 
 }
 
+#answer_duel{
+
+	width:200px;
+	margin-left:-100px;
+	height:100px;
+	margin-top:-50px;
+
+}
+
+#wait_duel{
+
+	width:200px;
+	margin-left:-100px;
+	height:100px;
+	margin-top:-50px;
+
+}
+
 #rules{
 
 	width:800px;

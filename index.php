@@ -139,6 +139,19 @@
 	<input autocomplete="off" type="texte" id="defi_value"><input type="submit" onClick="launchDefi()" value="Défi"></form>
 	</div>
 	
+	<div id="wait_duel" class="fenetre">
+	<span>Attente de réponse</span><br/>
+	<input type="submit" value="Annuler" onClick="resetChallenge()">
+	</div>
+	
+	<div id="answer_duel" class="fenetre">
+	<span id="answer_duel_text"></span><br/><br/>
+	<input type="submit" value="Accepter" onClick="acceptDefi()">
+	<input type="submit" value="Refuser" onClick="refuse()">
+		
+	</div>
+	
+	
 	
     <div id="rules" onClick="quitMsg()" class="fenetre">
     <h2>Règles</h2>

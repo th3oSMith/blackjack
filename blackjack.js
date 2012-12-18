@@ -11,6 +11,7 @@ var score_joueur;
 var blackjack_possible=true;
 var target=null;
 var waitReply;
+var challenger;
 
 
 
@@ -65,8 +66,21 @@ function getOnlineUsers(){
 			$('#users tr').html("");
 			
 			if (data['error']==0){
+				
+				if (data['challenger']){
+					
+					challenge(data['challenger']['type'],data['challenger']['login']);
+					challenger=data['challenger']['id'];
+				}
+				else{
+					
+					$("#answer_duel").fadeOut();
+					
+				}
+				
 				var online='';
 				for (var id in data['list']) {
+					
 					$('#users tr:last').after('<tr><td class="td_joueur"><a href="#" onClick=duel('+data['list'][id]['id']+',"'+data['list'][id]['login']+'")>'+data['list'][id]['login']+'</a></td><td>'+data['list'][id]['pot']+' UT</td></tr>');
 				}	
 			}
@@ -104,11 +118,7 @@ function getTables(){
 
 function createTable(){
 	
-	$("#nameExists").fadeOut()
-	
-	if ($("#newTable").val()!=""){
-	
-		$.post("php/create-table.php",{ name : $("#newTable").val()},function(data){
+		$.post("php/create-table.php",{ challenger : challenger},function(data){
 			
 			if (data['error']==0){
 				
@@ -130,7 +140,7 @@ function createTable(){
 				}
 			
 			},'json');	
-	}
+
 }
 
 function displayCard(player,cards){
@@ -712,7 +722,8 @@ function launchDuel(){
 		
 		if (data['error']==0){
 			
-			msg("Attente de la réponse de l'adversaire");
+			$("#fond").fadeIn();
+			$("#wait_duel").fadeIn();
 			waitReply=window.setInterval(waitForReply, reloadTime);
 			
 		}else{
@@ -738,14 +749,20 @@ function waitForReply(){
 		
 		if (data['error']==1){
 			
-			quitMsg();
+			$("#fond").fadeOut();
+			$("#wait_duel").fadeOut();
 			clearInterval(waitReply);
-			msg("Lancement de la partie");
+		
+		msg(data["table_id"]);
+		
+		rejoindreTable(data["table_id"]);
+		
 			
 		}else if (data['error']==2) {
 			
 			
-			quitMsg();
+			$("#fond").fadeOut();
+			$("#wait_duel").fadeOut();
 			clearInterval(waitReply);
 			msg("L'adversaire décline votre offre");
 			
@@ -755,3 +772,48 @@ function waitForReply(){
 	});
 	
 }
+
+function challenge(type,nom) {
+	
+	if (type=="duel"){
+		
+	$("#answer_duel_text").html(nom+" vous défie !");
+	$("#answer_duel").fadeIn();
+		
+	}
+	
+	
+}
+
+function resetChallenge()
+{
+	
+	$.get("php/reset-challenge.php", function(data){
+		
+			$("#fond").fadeOut();
+			$("#wait_duel").fadeOut();
+			clearInterval(waitReply);
+			
+		
+		
+		
+	});
+	
+	}
+
+function refuse()
+{
+	$.get("php/refuse-defi.php", function(data){
+		
+	
+		
+	});
+	
+}
+
+
+function acceptDefi(){
+	
+	createTable();
+	
+	}

@@ -6,17 +6,8 @@ require "join-table.php";
 
 $db=db_connect();
 
-$nom=$_POST['name'];
-
-$query=$db->prepare("SELECT * FROM tables WHERE table_nom=:nom");
-
-$query->execute(array(
-				"nom"=>$nom
-				));
-
-$count=$query->rowCount();
-
-if ($count==0){
+$nom=0;
+$challenger=$_POST['challenger'];
 	
 
 	
@@ -31,8 +22,10 @@ if ($count==0){
 					));
 					
 	$id_table=$db->lastInsertId();
+	
 
 	$json = joinTable($id_table,$db);
+	
 	
 	//Creation de l'entrée online_tabke
 	
@@ -42,13 +35,15 @@ if ($count==0){
 				"id"=>$id_table
 				));
 	
-			
-}else
-{
-	$json['error']='1';
+	//Envoi de la table à l'autre utilisateur
 	
+	$up=$db->prepare("UPDATE users SET user_status=0, user_challenge_type=:table, user_challenger=0 WHERE user_id=:id ;");
 	
-	}
+	$up->execute(array(
+					"id"=>$_SESSION['id'],
+					"table"=>$id_table
+					));
+		
 
 
 echo json_encode($json);
