@@ -1,18 +1,29 @@
 <?php 
 	session_start();
 	
-	require('functions.php');
+	require "functions.php";
 	
 	$db = db_connect();
 	
 	if(isset($_POST['immunity_start'])){
-		update_tokens($_SESSION['id'],immunity_cost($_SESSION['id'],$db),$db);
-		if(is_immunized($_SESSION['id'],$db)){ // On étend son immunité s'il est déjà immmunisé
-			//extend_immunity($_SESSION['id'],$db);
-		}else{ // Sinon, on créé une nouvelle immunité
-			immunize($_SESSION['id'],$_POST['immunity_start'],$db);
-			echo("Vous avez été immunisé !");
-			}
+		if(get_tokens($_SESSION['id'],$db)>=immunity_cost($_SESSION['id'],$_POST['immunity_start'],$_POST['immunity_end'],$db)){ // Si l'utilisateur a assez de jetons, on paie
+			update_tokens($_SESSION['id'],immunity_cost($_SESSION['id'],$_POST['immunity_start'],$_POST['immunity_end'],$db),$db);
+				immunize($_SESSION['id'],$_POST['immunity_start'],$_POST['immunity_end'],$db);
+				$query = $db->prepare('SELECT user_immunity_used FROM users WHERE user_id = :user_id');
+				$query->execute(array(
+						'user_id' => $_SESSION['id']
+						));
+				$immunities = $query->fetch();
+				$immunities = $immunities + $_POST['immunity_end'] - $_POST['immunity_start'];
+				$query = $db->prepare('UPDATE users SET user_immunity_used = :immunities WHERE user_id = :user_id');	// On met à jour son quota d'heures d'immunité
+				$query->execute(array(
+						'immunities' => $immunities,
+						'user_id' => $user_id
+						));
+				echo("Vous avez été immunisé !");
+		}else{	// Pas assez de jetons : erreur
+				echo("Désolé, vous n'avez pas assez de jetons !");
+		}
 	}elseif(isset($_POST['user_cut'])){
 		// TODO
 		}
@@ -27,15 +38,10 @@
 	<h3>Immunité :</h3>
 	Protégez-vous de tous les tranchages à l'heure de votre choix !
 		<form method="post" action="shop.php">
-		<?php
-			if(is_immunized($_SESSION['id'],$db)){
-				?>
-			<input type="submit" value="Renouveller" />
-			
-		<?php }else{
-			?>
 			<p>Faire démarrer l'immunité à : <input type="number" name="immunity_start" min=0 max=23 step=1 />h</p>
-			<input type="submit" value="Acheter" /><?php } ?>
+			<p>Faire s'arrêter l'immunité à : <input type="number" name="immunity_start" min=0 max=23 step=1 />h</p>
+			<!-- Inclure Script pour afficher les prix !-->
+			<input type="submit" value="Acheter !" />
 		</form>
 	
 	<h3>Trancher quelqu'un :</h3>
