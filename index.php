@@ -49,7 +49,7 @@
     
     <span id="table_choice" >
     
-    <div id="tables_div">
+    <div id="tables_div" style='display:none'>
     <table border="1" id="tables">
     <caption><b>Tables de jeu</b></caption>
     <tbody id="tables_list" ><tr><td></td></tr></tbody>
@@ -133,6 +133,13 @@
 	<span id="prompt_text"></span><br/><br/>
 	<form action="javascript:setBet()">Mise : <input autocomplete="off" type="texte" id="prompt_value"> <input type="submit" value="Valider"></form>
 	</div>
+	<div id="menu_duel" class="fenetre">
+	<span id="menu_duel_text"></span><br/><br/>
+	<form action=""><input type="submit" onClick="launchDuel()" value="Duel"><p>ou</p>
+	<input autocomplete="off" type="texte" id="defi_value"><input type="submit" onClick="launchDefi()" value="Défi"></form>
+	</div>
+	
+	
     <div id="rules" onClick="quitMsg()" class="fenetre">
     <h2>Règles</h2>
     

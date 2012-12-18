@@ -226,12 +226,19 @@ if ($joueur==$table['table_mvt']){
 			
 			
 			$gain=0;
+			$coeff=2;
+			
+			if ($score_joueur==21){
+				
+				$coeff=3;
+				
+			}
 			
 			if ($score_joueur<22){
 			
 			if ($score_croupier>21){ //Si le croupier a brulé
 				
-				$gain=2*$user['user_mise'];
+				$gain=$coeff*$user['user_mise'];
 				
 			}else{ //si le croupier est en course
 				
@@ -246,7 +253,7 @@ if ($joueur==$table['table_mvt']){
 					
 					if ($score_joueur>$score_croupier){ //Si le joueur a gagné
 						
-						$gain=2*$user['user_mise'];						
+						$gain=$coeff*$user['user_mise'];						
 						
 					}
 						

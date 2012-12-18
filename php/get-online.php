@@ -48,7 +48,7 @@ $delete->execute(array(
 	"time"=>$time_out
 	));
 
-$query=$db->prepare("SELECT user_login, user_id
+$query=$db->prepare("SELECT user_login, user_id, user_pot
 					FROM online
 					LEFT JOIN users
 					ON users.user_id=online.online_user;"
@@ -65,6 +65,7 @@ if ($count!=0){
 		
 		$infos["id"]=$data['user_id'];
 		$infos["login"]=$data["user_login"];
+		$infos["pot"]=$data["user_pot"];
 		
 		$accounts[$i]=$infos;
 		$i++;

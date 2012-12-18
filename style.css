@@ -78,10 +78,17 @@
 
 }
 
-#users td {
+#users caption,tr,td {
 	
 	width:100%;
 
+}
+
+.td_joueur  {
+
+	width:200px;
+	padding-left:100px; /* Si quelqu'un trouve une meilleure solution pour l'affichage du tableau des joueur je suis preneur*/
+	padding-right:100px;
 }
 
 #tables th,td {
@@ -245,6 +252,7 @@
 	border:3px solid black;
 	display:none;
 	text-align:center;
+	padding:5px;
 
 
 }
@@ -269,6 +277,15 @@
 
 	width:400px;
 	margin-left:-200px;
+	height:200px;
+	margin-top:-100px;
+
+}
+
+#menu_duel{
+
+	width:200px;
+	margin-left:-100px;
 	height:200px;
 	margin-top:-100px;
 
@@ -398,3 +415,6 @@ caption {
 	background-color:silver;
 
 }
+
+
+

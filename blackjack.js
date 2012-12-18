@@ -7,6 +7,11 @@ var connexionTest=true;
 var refreshTables;
 var refreshUsers;
 var bet_var=false;
+var score_joueur;
+var blackjack_possible=true;
+var target=null;
+var waitReply;
+
 
 
 function connexion(){
@@ -28,7 +33,7 @@ $(document).ready(function() {
 	if(document.getElementById('users')) {
 		// actualisation des messages
 		refreshUsers = window.setInterval(getOnlineUsers, reloadTime);
-		refreshTables = window.setInterval(getTables, reloadTime);
+		//refreshTables = window.setInterval(getTables, reloadTime);
 	}
 });
 
@@ -62,7 +67,7 @@ function getOnlineUsers(){
 			if (data['error']==0){
 				var online='';
 				for (var id in data['list']) {
-					$('#users tr:last').after('<tr><td>'+data['list'][id]['login']+'</td><td></td></tr>');
+					$('#users tr:last').after('<tr><td class="td_joueur"><a href="#" onClick=duel('+data['list'][id]['id']+',"'+data['list'][id]['login']+'")>'+data['list'][id]['login']+'</a></td><td>'+data['list'][id]['pot']+' UT</td></tr>');
 				}	
 			}
 		
@@ -237,6 +242,19 @@ function listen(){
 			
 			case 1: //Tour de jeu
 			
+			if (score_joueur>21){
+				
+				msg("Vous avez dépassé 21",true);
+				jouer(3);
+				
+			}
+			
+			if (score_joueur==21){
+				
+				msg("Blackjack !",true);
+				jouer(3);
+				
+			}
 			
 			break;
 			
@@ -344,6 +362,7 @@ function getMains(){
 				if (joueur==x){
 					
 					$("#user_area_pot").html(data['pot'][x]);
+					score_joueur=score(data['main'][x]);
 					
 				}
 				
@@ -361,7 +380,7 @@ function getMains(){
 		//On retarde l'apparition du bouton le temps que la partie s'initialise
 		var clear = setTimeout(function() {
 				$("#message").fadeIn();
-				},2000);
+				},6000);
 			
 		
 		
@@ -430,6 +449,7 @@ function jouer(action){
 			
 			case 1:
 			$.getJSON("php/draw-card.php",function(data){});
+			blackjack_possible=false;
 			break;
 			
 			case 2:
@@ -525,15 +545,27 @@ function quitMsg(){
 	$("#fond").fadeOut();
 	$("#message_fenetre.fenetre").fadeOut();
 	$("#rules.fenetre").fadeOut();
+	$("#menu_duel.fenetre").fadeOut();
 	
 }
 
-function msg(txt){
+function msg(txt,temp){
 	
 	
 	$("#message_text").html(txt);
-	$("#fond").fadeIn();
+	
 	$("#message_fenetre.fenetre").fadeIn();
+	
+		if (temp){
+
+			var clear = setTimeout(quitMsg,2000);
+			
+			}
+		else{
+			
+			$("#fond").fadeIn();
+		}
+	
 	
 	
 }
@@ -556,6 +588,7 @@ function bet(txt){
 
 	
 }
+
 
 function unbet(){
 	
@@ -614,5 +647,111 @@ function rules(){
 	
 	$("#fond").fadeIn();
 	$("#rules.fenetre").fadeIn();
+	
+}
+
+
+function score(main)
+{
+	total=0;
+	nbAs=0;
+			
+			
+			for (y=0;y<main.length;y++){
+				
+				
+				if (main[y][1]<11){
+					
+					total+=main[y][1];
+					
+					
+				}else{
+					
+					total+=10;
+				}
+				
+				if (main[y][1]==1){
+					
+					total+=10; //on ajoute 10 pour avoir 11
+					nbAs++; // On note qu'on a eu un as
+					
+				}
+				
+				
+			}
+			
+			while (total > 21 && nbAs>0) {
+				
+				total-=10;
+				nbAs--;
+				
+			}
+	
+	return total;
+	
+	
+	}
+
+function duel(id,nom){
+	
+	
+	target=id;
+	$("#menu_duel_text").html("Défier "+nom);
+	$("#fond").fadeIn();
+	$("#menu_duel").fadeIn();
+	
+}
+
+
+function launchDuel(){
+	
+	quitMsg();
+	
+	$.post("php/set-defi.php",{ id : target}, function(data){
+		
+		
+		if (data['error']==0){
+			
+			msg("Attente de la réponse de l'adversaire");
+			waitReply=window.setInterval(waitForReply, reloadTime);
+			
+		}else{
+			
+			if (data['error']==2){
+				
+				msg("Il a déjà dit non !");
+				
+			}else{
+			
+				msg("Impossible de lancer le défi");
+			}
+		}
+		
+		
+	},'json');
+	
+}
+
+function waitForReply(){
+	
+	$.getJSON("php/get-answer.php", function(data){
+		
+		if (data['error']==1){
+			
+			quitMsg();
+			clearInterval(waitReply);
+			msg("Lancement de la partie");
+			
+		}else if (data['error']==2) {
+			
+			
+			quitMsg();
+			clearInterval(waitReply);
+			msg("L'adversaire décline votre offre");
+			
+		}
+		
+		
+	});
 	
 }
