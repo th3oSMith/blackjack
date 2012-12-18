@@ -83,7 +83,6 @@ function absent($db,$table,$timeout){
 	
 }
 
-
 function resetChallenge($db) {
 	
 	if (isset($_SESSION['target']))
@@ -99,8 +98,45 @@ function resetChallenge($db) {
 	unset($_SESSION['target']);
 	
 		}
+
+
+function update_tokens($user_id,$amount,$db){ // Montant algébrique à ajouter (gain ou perte)
 	
+	$query = $db->prepare('SELECT user_pot FROM users WHERE user_id = :id');
+	$query->execute(array(
+			'id' => $user_id
+			));
+			
+	$pot = $query->fetch();
+	$pot = $pot + $amount;
 	
+	$query = $dbb->prepare('UPDATE users SET user_pot = :pot WHERE user_id = :id');
+	$query->execute(array(
+			'id' => $user_id,
+			'pot' => $pot
+			));
+			
+	return $pot;
 }
 
+function is_immunized($user_id,$db){	// Renvoie vrai si le joueur a une immunité
+	$query = $db->prepare('SELECT * FROM users WHERE user_immunity_pending = 1 AND user_id = :user_id');
+	$query->execute(array(
+			'user_id' => $user_id
+			));
+			
+	$immunized=$query->fetch();	
+
+	return $immunized;
+}
+
+function immunity_cost($user_id,$db){	// Renvoie le coût de l'achat d'une nouvelle immunité
+	$query = $db->prepare('SELECT user_immunity_used WHERE user_id = :user_id');
+	$query->execute(array(
+			'user_id' => $user_id
+			));
+	$immunity_number = $query->fetch();
+	
+	return (2000 + 1000*$immunity_number);	// A VOIR : COÛT DE BASE D'UNE IMMUNITE ?
+}
 ?>
