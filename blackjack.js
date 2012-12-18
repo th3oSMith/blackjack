@@ -1,4 +1,5 @@
-var reloadTime = 1000;
+var reloadTimeMenu = 3000;
+var reloadTimeGame = 1000;
 var mvt=-1;
 var phase;
 var joueur=1;
@@ -12,6 +13,7 @@ var blackjack_possible=true;
 var target=null;
 var waitReply;
 var challenger;
+var defi_sum;
 
 
 
@@ -33,7 +35,8 @@ function connexion(){
 $(document).ready(function() {
 	if(document.getElementById('users')) {
 		// actualisation des messages
-		refreshUsers = window.setInterval(getOnlineUsers, reloadTime);
+		refreshUsers = window.setInterval(getOnlineUsers, reloadTimeMenu);
+		getOnlineUsers();
 		//refreshTables = window.setInterval(getTables, reloadTime);
 	}
 });
@@ -67,10 +70,14 @@ function getOnlineUsers(){
 			
 			if (data['error']==0){
 				
+				defi_sum=data['defi_sum'];
+				$("#defi_submit").val("Défier (coût :"+defi_sum+")");
+				
 				if (data['challenger']){
 					
-					challenge(data['challenger']['type'],data['challenger']['login']);
 					challenger=data['challenger']['id'];
+					challenge(data['challenger']['type'],data['challenger']['login']);
+					
 				}
 				else{
 					
@@ -119,6 +126,7 @@ function getTables(){
 function createTable(){
 	
 		$.post("php/create-table.php",{ challenger : challenger},function(data){
+			
 			
 			if (data['error']==0){
 				
@@ -191,8 +199,8 @@ function displayTable(){
 	$("#table_choice").fadeOut();
 	$("#table_play").fadeIn();
 	
-	window.setInterval(listen, reloadTime);
-	window.setInterval(getMains, reloadTime);
+	window.setInterval(listen, reloadTimeGame);
+	window.setInterval(getMains, reloadTimeGame);
 	
 	
 	message("Bienvenue, la partie va commencer dans quelques instants");
@@ -717,14 +725,14 @@ function launchDuel(){
 	
 	quitMsg();
 	
-	$.post("php/set-defi.php",{ id : target}, function(data){
+	$.post("php/set-defi.php",{ id : target, defi: -1}, function(data){
 		
 		
 		if (data['error']==0){
 			
 			$("#fond").fadeIn();
 			$("#wait_duel").fadeIn();
-			waitReply=window.setInterval(waitForReply, reloadTime);
+			waitReply=window.setInterval(waitForReply, reloadTimeMenu);
 			
 		}else{
 			
@@ -753,7 +761,6 @@ function waitForReply(){
 			$("#wait_duel").fadeOut();
 			clearInterval(waitReply);
 		
-		msg(data["table_id"]);
 		
 		rejoindreTable(data["table_id"]);
 		
@@ -777,7 +784,13 @@ function challenge(type,nom) {
 	
 	if (type=="duel"){
 		
-	$("#answer_duel_text").html(nom+" vous défie !");
+	$("#answer_duel_text").html(nom+" vous provoque en duel !");
+	$("#answer_duel").fadeIn();
+		
+	}else
+	{
+		
+	$("#answer_duel_text").html(nom+" vous défie (mise : "+type+")");
 	$("#answer_duel").fadeIn();
 		
 	}
@@ -803,7 +816,7 @@ function resetChallenge()
 
 function refuse()
 {
-	$.get("php/refuse-defi.php", function(data){
+	$.get("php/refuse-challenge.php", function(data){
 		
 	
 		
@@ -812,8 +825,45 @@ function refuse()
 }
 
 
-function acceptDefi(){
-	
+function acceptChallenge(){
+		
+	$("#answer_duel").fadeOut();
+	clearInterval(refreshTables);
 	createTable();
 	
 	}
+
+function launchChallenge(){
+	
+	quitMsg();
+	
+	$.post("php/set-challenge.php",{ id : target, defi : 1}, function(data){
+		
+		
+		if (data['error']==0){
+			
+			$("#fond").fadeIn();
+			$("#wait_duel").fadeIn();
+			waitReply=window.setInterval(waitForReply, reloadTimeMenu);
+			
+		}else{
+			
+			
+			
+			if (data['error']==2){
+				
+				msg("Il a déjà dit non !");
+				
+			}else if (data['error']==4){
+				msg("Vous n'avez pas assez de jetons");
+			}
+			else{
+			
+				msg("Impossible de lancer le défi");
+			}
+		}
+		
+		
+	},'json');
+	
+}

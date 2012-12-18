@@ -10,6 +10,7 @@ $json['challenger']=0;
 
 $json['login']=$user['user_login'];
 $json['pot']=$user['user_pot'];
+$json['defi_sum']=$user["user_defi_sum"];
 
 
 $query=$db->prepare("SELECT * FROM online WHERE online_user=:user");
@@ -18,6 +19,16 @@ $query->execute(array("user"=>$_SESSION['id']));
 
 $count=$query->rowCount();
 $data=$query->fetch();
+
+
+//On dit que le joueur est libre pour un défi
+
+$up=$db->prepare("UPDATE users SET user_status=0 WHERE (user_id=:id AND user_challenger='0')");
+
+
+$up->execute(array(
+			"id"=>$_SESSION['id']
+			));
 
 
 if (user_verified()){
@@ -63,6 +74,10 @@ if ($getChallenge->rowCount()!=0){
 	if ($data['user_challenge_type']==-1){
 		
 		$json['challenger']['type']='duel';
+		
+	}else{
+		
+		$json['challenger']['type']=$data['user_challenge_type'];
 		
 	}
 	

@@ -136,7 +136,7 @@
 	<div id="menu_duel" class="fenetre">
 	<span id="menu_duel_text"></span><br/><br/>
 	<form action=""><input type="submit" onClick="launchDuel()" value="Duel"><p>ou</p>
-	<input autocomplete="off" type="texte" id="defi_value"><input type="submit" onClick="launchDefi()" value="Défi"></form>
+	<input type="submit" id="defi_submit" onClick="launchChallenge()" value="Défi"></form>
 	</div>
 	
 	<div id="wait_duel" class="fenetre">
@@ -146,7 +146,7 @@
 	
 	<div id="answer_duel" class="fenetre">
 	<span id="answer_duel_text"></span><br/><br/>
-	<input type="submit" value="Accepter" onClick="acceptDefi()">
+	<input type="submit" value="Accepter" onClick="acceptChallenge()">
 	<input type="submit" value="Refuser" onClick="refuse()">
 		
 	</div>

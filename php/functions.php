@@ -84,13 +84,42 @@ function absent($db,$table,$timeout){
 }
 
 
-function resetChallenge($db) {
+function resetChallenge($db, $perte) {
 	
-	if (isset($_SESSION['target']))
+	$user=get_user($db);
 	
-	{
+	if (isset($_SESSION['target'])){
 		
-	$up=$db->prepare("UPDATE users SET user_challenger=0, user_status=0 WHERE user_id=:id");
+		
+	if ($perte){
+		
+		
+
+	//On enlève les jetons au joueur
+	$up=$db->prepare("UPDATE users SET user_pot = user_pot - :pot WHERE user_id=:id");
+	
+	$up->execute(array(
+				"id"=>$_SESSION['target'],
+				"pot"=>$user['user_defi_sum']
+				));
+				
+	//On les rajoute au challenger
+	
+	
+	$up=$db->prepare("UPDATE users SET user_pot = user_pot + :pot WHERE user_id=:id");
+	
+	$up->execute(array(
+				"id"=>$_SESSION['id'],
+				"pot"=>$user['user_defi_sum']
+				));
+		
+		
+		
+		
+		
+	}
+		
+	$up=$db->prepare("UPDATE users SET user_challenger=0, user_status=0, user_reponse=0 WHERE user_id=:id");
 	
 	$up->execute(array(
 				"id"=>$_SESSION['target']
