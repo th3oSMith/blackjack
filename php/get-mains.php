@@ -6,7 +6,7 @@ $db=db_connect();
 $table=get_table($db);
 $user=get_user($db);
 
-$query=$db->prepare("SELECT user_main, user_joueur,user_mise,user_login,user_pot FROM users WHERE user_table=:table");
+$query=$db->prepare("SELECT user_main, user_joueur,user_mise,user_login,user_pot,user_id FROM users WHERE user_table=:table");
 
 $query->execute(array(
 			"table"=>$table['table_id']
@@ -18,10 +18,21 @@ while ($data=$query->fetch()){
 	
 
 	
-	$json['main'][$data['user_joueur']]=unserialize($data['user_main']);
+	
 	$json['mise'][$data['user_joueur']]=$data['user_mise'];
 	$json['nick'][$data['user_joueur']]=$data['user_login'];
 	$json['pot'][$data['user_joueur']]=$data['user_pot'];
+
+	if ($data['user_id']==$_SESSION['id'] || $table['table_phase']==4){
+		
+		$json['main'][$data['user_joueur']]=unserialize($data['user_main']);
+		
+		}else{
+		
+		$json['main'][$data['user_joueur']][0]=unserialize($data['user_main'])[0];
+		$json['main'][$data['user_joueur']][1]=array(9,9);
+			
+		}
 
 	if ($table['table_phase']<0){
 	$json['main'][$data['user_joueur']]=array(array(9,9),array(9,9));
@@ -34,7 +45,7 @@ while ($data=$query->fetch()){
 
 
 $paquet=unserialize($table['table_cartes']);
-$json['main'][0]=unserialize($table['table_croupier']);
+//$json['main'][0]=unserialize($table['table_croupier']);
 
 $json['nb_joueur']=$table['table_nb_joueur'];
 

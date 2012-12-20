@@ -83,12 +83,9 @@ function absent($db,$table,$timeout){
 	
 }
 
-<<<<<<< HEAD
+
 
 function resetChallenge($db, $perte) {
-=======
-function resetChallenge($db) {
->>>>>>> b5d1cfdd63fff8cf33298174fd2062a4e1b98947
 	
 	$user=get_user($db);
 	
@@ -152,10 +149,10 @@ function update_tokens($user_id,$amount,$db){ // Montant algébrique à ajouter 
 			'id' => $user_id
 			));
 			
-	$pot = $query->fetch();
+	$pot = $query->fetch()['user_pot'];
 	$pot = $pot + $amount;
 	
-	$query = $db->prepare('UPDATE users SET user_pot = :pot WHERE user_id = :id');
+	$query = $db->prepare('UPDATE users SET user_pot = :pot WHERE user_id = :id');  // UPDATE users SET user_pot=user_pot + :amount
 	$query->execute(array(
 			'id' => $user_id,
 			'pot' => $pot
@@ -165,12 +162,12 @@ function update_tokens($user_id,$amount,$db){ // Montant algébrique à ajouter 
 	$query->execute(array(
 			'id' => $user_id
 			));
-	$pot_max = $query->fetch();
+	$pot_max = $query->fetch()['user_pot_max'];
 	
 	if($pot > $pot_max){
 		$query = $db->prepare('UPDATE users SET user_pot_max = :pot_max WHERE user_id = :id');
 		$query->execute(array(
-			'pot_max' => $pot_max,
+			'pot_max' => $pot, //Pot ou Pot Max ????
 			'id' => $user_id
 			));
 	}
@@ -183,7 +180,7 @@ function immunity_cost($user_id,$immunity_start,$immunity_end,$db){	// Renvoie l
 	$query->execute(array(
 			'user_id' => $user_id
 			));
-	$immunity_number = $query->fetch();
+	$immunity_number = $query->fetch()['user_immunity_used'];
 	$cost = 2000 + 1000*$immunity_number;
 	$i = $immunity_number;
 	while($i < ($immunity_number + $immunity_end  - $immunity_start)){
@@ -207,6 +204,14 @@ function immunize($user_id,$immunity_hour_start,$db){
 			'immunity_end' => $immunity_end,
 			'user_id' => $user_id
 			));
+}
+
+
+function defeat(){
+	
+	
+	
+	
 }
 
 ?>

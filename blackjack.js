@@ -170,20 +170,6 @@ function displayCard(player,cards){
 		
 		}
 		
-	}else{
-		
-
-		$("#casino").html('');
-		for (x=0;x<cards.length;x++){
-		
-		
-		
-		$("#casino").append('<image style="height:150px;display:inline-block;position:relative;left:-'+x*20+'px;" src="cartes/'+cards[x][0]+''+cards[x][1]+'.png" />');
-		
-		}
-		
-		
-		
 	}
 
 }
@@ -289,15 +275,19 @@ function listen(){
 			case 3:
 			
 			$.getJSON("php/do.php",function(data){
+							
 				
-				
-				if (data['gain']>=0){
+				if (data['gain']>0){
 				
 				message("Partie terminée - Vous avez gagné "+data["gain"]+" jetons");
 				}
-				else{
+				else if (data['gain']<0) {
 					
 					message("Partie terminée - Vous avez perdu "+Math.abs(data["gain"])+" jetons");
+				}
+				else {
+					
+					message("Match nul");
 				}
 				
 				
@@ -360,7 +350,7 @@ function getMains(){
 			
 			
 			
-			for (var x=0;x<=data['nb_joueur'];x++){
+			for (var x=1;x<=data['nb_joueur'];x++){
 			
 			
 			
@@ -725,7 +715,7 @@ function launchDuel(){
 	
 	quitMsg();
 	
-	$.post("php/set-defi.php",{ id : target, defi: -1}, function(data){
+	$.post("php/set-challenge.php",{ id : target, defi: -1}, function(data){
 		
 		
 		if (data['error']==0){

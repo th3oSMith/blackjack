@@ -49,7 +49,7 @@ if ($joueur==$table['table_mvt']){
 		$croupier[0]=$paquet[0];	
 		
 		
-		$txtCroupier=serialize($croupier);
+		$txtCroupier=serialize($croupier); // On laisse les cartes pour le croupier même s'il n'existe plus, il doit y avoir un test dessus quelque part.
 		$txtPaquet=serialize($paquet);
 		
 		
@@ -154,9 +154,9 @@ if ($joueur==$table['table_mvt']){
 		
 		break;
 		
-		case 2 : // Tour du croupier
+		case 2 : // Tour de comptage des points
 		
-		//Calcul des points des joeurs
+		//Calcul des points des joueurs
 		
 		
 		$query=$db->prepare("SELECT user_main FROM users WHERE user_table = :id ORDER BY user_joueur ASC");
@@ -165,11 +165,13 @@ if ($joueur==$table['table_mvt']){
 							"id"=>$table['table_id'],
 							));
 		
+		
+		$i=1;	
 		while ($data=$query->fetch()){
 			
 			
 
-			$i=1;				
+						
 			$main=unserialize($data['user_main']);
 			
 			$total=0;
@@ -181,8 +183,9 @@ if ($joueur==$table['table_mvt']){
 			}
 			
 			
-		//Déroulement des actions du croupier
-		
+		//On met à zéro le score des gens qui sont brulés
+	
+	
 		for ($x=1;$x<=count($score);$x++)
 		{
 			if ($score[$x]>21){$score[$x]=0;} //on ne s'occupe pas des perdants
@@ -191,29 +194,20 @@ if ($joueur==$table['table_mvt']){
 		
 		//Détermination du plus haut score
 		
+		
+		
+		
 		$maxi = max($score);
 		$paquet=unserialize($table['table_cartes']);
 		
-		$croupier[0]=$paquet[0];
-		$i=1;
-		$cursor=$table['table_cursor'];
-		
-		while (score($croupier) < $maxi){
-			
-			$croupier[$i]=$paquet[$cursor];
-			$i++;
-			$cursor++;	
-			
-		}
-		
-		//On sauvegarde les cartes du croupier et on passe à la phase suivante
+		//On passe à la phase suivante
 		
 		
-			$update=$db->prepare("UPDATE tables SET  table_croupier=:main, table_phase=table_phase+1 WHERE table_id=:id");
+			$update=$db->prepare("UPDATE tables SET table_croupier=:maxi, table_phase=table_phase+1 WHERE table_id=:id");
 			
 			$update->execute(array(
 						"id"=>$table['table_id'],
-						"main"=>serialize($croupier)
+						"maxi"=>$maxi
 						));	
 
 			break;
@@ -222,8 +216,7 @@ if ($joueur==$table['table_mvt']){
 			
 			
 			$score_joueur=score(unserialize($user['user_main']));
-			$score_croupier=score(unserialize($table['table_croupier']));
-			
+			$maxi=$table['table_croupier'];
 			
 			$gain=0;
 			$coeff=2;
@@ -235,30 +228,26 @@ if ($joueur==$table['table_mvt']){
 			}
 			
 			if ($score_joueur<22){
-			
-			if ($score_croupier>21){ //Si le croupier a brulé
-				
-				$gain=$coeff*$user['user_mise'];
-				
-			}else{ //si le croupier est en course
 				
 				 //Si le joueur est en course
 				
 
 						
-					if ($score_joueur==$score_croupier){ //S'il y a égalité
+					if ($score_joueur==$maxi){ //Si le joueur a gagné
+						$gain=$coeff*$user['user_mise'];
+					}else{ // Le joueur a perdu
 						
-						$gain=$user['user_mise'];
-					}
-					
-					if ($score_joueur>$score_croupier){ //Si le joueur a gagné
-						
-						$gain=$coeff*$user['user_mise'];						
+						defeat();
 						
 					}
 						
 					
-				}
+				
+				
+			}else{ //Le joueur a perdu car brulé
+				
+				//Insérer le script lien avec Kettu pour trancher les gens
+				defeat();
 				
 			}
 					
@@ -266,7 +255,8 @@ if ($joueur==$table['table_mvt']){
 			
 				
 				$json['gain']=$gain-$user['user_mise'];
-				$json['croupier']=unserialize($table['table_croupier']);
+				
+				
 				
 				$up=$db->prepare("UPDATE users SET user_pot = user_pot + :gain, user_mise=0 WHERE user_id =:id");
 				

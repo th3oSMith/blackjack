@@ -96,7 +96,7 @@
 	
 	
 	
-	<div id="player3" class="player">
+	<div id="player3" class="player" style="display:none" >
 	<div id="cards3" class="subPlayerA" style="float:left;"></div>
 	<div  class="subPlayer" style="float:right;">
 	<span >Joueur : <span id="nick3"></span><br/><br/>Mise : <span id="mise3"></span> jetons</span><br/><br/>Pot : <span id="pot3"></span> jetons</span>
