@@ -90,10 +90,14 @@ function getOnlineUsers(){
 					
 					$('#users tr:last').after('<tr><td class="td_joueur"><a href="#" onClick=duel('+data['list'][id]['id']+',"'+data['list'][id]['login']+'")>'+data['list'][id]['login']+'</a></td><td>'+data['list'][id]['pot']+' UT</td></tr>');
 				}	
-			}
+			}else{
+				
+					$('#users tr:last').after("<tr><td>Vous ne pouvez plus vous endettez d'avantage</td><td></td></tr>");		
+				
+				}
 		
 			
-			displayLogin(data['login'], data['pot']);
+			displayLogin(data['login'], data['pot'], data['debt']);
 			
 		
 		});
@@ -222,8 +226,8 @@ function listen(){
 					$.getJSON("php/get-pot.php",function(data){
 						
 						
-						
 						if (data['pot']==0){
+							unbet();
 							kick();
 						}
 						
@@ -368,7 +372,7 @@ function getMains(){
 				
 				
 				if (joueur==x){
-					
+					$("#user_area_debt").html(data['debt'][x]);
 					$("#user_area_pot").html(data['pot'][x]);
 					score_joueur=score(data['main'][x]);
 					
@@ -532,6 +536,11 @@ function message(msg,temp){
 
 function effacer(player){
 	
+	
+	msg("Votre adversaire est parti comme un lache !");
+	setTimeout(function() {
+				window.location.reload();		
+				},2000);
 	$("#nick"+player).html("OUT");
 	$("#mise"+player).html("OUT");
 	$("#cards"+player).html('');
@@ -540,7 +549,7 @@ function effacer(player){
 
 function kick(){
 	
-	msg("Vous n'avez plus de jetons, vous êtes hors jeu");
+	msg("Vous ne pouvez plus vous endettez d'avantage");
 	setTimeout(function() {
 				window.location.reload();		
 				},2000);
@@ -578,11 +587,11 @@ function msg(txt,temp){
 	
 }
 
-function displayLogin(login, pot){
+function displayLogin(login, pot,debt){
 	
 	$("#user_area_login").html(login);
 	$("#user_area_pot").html(pot);
-	
+	$("#user_area_debt").html(debt);
 	}
 
 function bet(txt){

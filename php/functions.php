@@ -209,9 +209,58 @@ function immunize($user_id,$immunity_hour_start,$db){
 
 function defeat(){
 	
+		//Mettre ici l'interfaçage des tranchages avec Kettu
 	
 	
+}
+
+
+function get_login(){
 	
+	require 'kettu.class.php'; //On importe le fichier de classe Kettu tiré du www
+	
+
+	define( 'KETTU_ENABLE_LINK', true );				// 
+	define( 'KETTU_URL', 'https://192.168.92.18' );		//Contantes utilisées par la classe Kettu
+
+	$kettu = new Kettu('ip',$_SERVER['REMOTE_ADDR']);	//On demande gentiement à Kettu de nous renvoyer les infos sur l'utilisateur
+
+	$login='';
+
+	if ($kettu->is_valid()){							//Si l'utilisateur existe
+		 $login = strtolower($kettu->firstname).".".strtolower($kettu->name);	//On met en forme son login
+		 
+		 //On vérifie si l'utilisateur existe sur le casino et dans le cas contraire on le crée
+		 
+		 $db=db_connect();
+		 
+		 $query=$db->prepare("SELECT * from users WHERE user_login=:login");
+		 
+		 $query->execute(array(
+					"login"=>$login
+					));
+					
+		if ($query->rowCount()==0){ // Si l'utilisateur n'existe pas
+		 
+			$write=$db->prepare("INSERT INTO users (user_id,user_login,user_mdp,user_pot,user_victory,user_defeat, user_defi_sum) VALUES(:id, :login,:mdp,:pot,:win,:lose, :defi)");
+
+
+			$write->execute(array(
+			"id"=>'',
+			"login"=>$login,
+			"mdp"=>$kettu->md5_password,
+			"pot"=>"1000",
+			"win"=>"0",
+			"lose"=>"0",
+			"defi"=>"1000"
+			));
+		 
+		 
+		 
+		}
+	}
+
+	return $login;	
 }
 
 ?>

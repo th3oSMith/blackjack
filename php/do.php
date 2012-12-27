@@ -54,7 +54,7 @@ if ($joueur==$table['table_mvt']){
 		
 		
 		
-		$update=$db->prepare("UPDATE tables SET table_time=:time, table_croupier=:croupier, table_cartes=:paquet, table_cursor=1+2*table_nb_joueur, table_phase=table_phase+1 WHERE table_id= :id");
+		$update=$db->prepare("UPDATE tables SET table_pot=0, table_time=:time, table_croupier=:croupier, table_cartes=:paquet, table_cursor=1+2*table_nb_joueur, table_phase=table_phase+1 WHERE table_id= :id");
 		
 		$update->execute(array(
 						"paquet"=>$txtPaquet,
@@ -108,15 +108,24 @@ if ($joueur==$table['table_mvt']){
 		
 			
 						
-		if ($_POST['mise']<=$query->fetch()['user_pot'] && $_POST['mise']>0){
+		if ($_POST['mise']+$user['user_debt']<5000 && $_POST['mise']>0){
 			
 			$json['error']=0;
 			
-			$miser=$db->prepare("UPDATE users SET user_pot=user_pot-:mise, user_mise=:mise WHERE user_id = :id");
+
+			
+			$miser=$db->prepare("UPDATE users SET user_debt=user_debt+:mise, user_mise=:mise WHERE user_id = :id");
 			
 			$miser->execute(array(
 						"mise"=>$_POST['mise'],
 						"id"=>$_SESSION['id']
+						));
+						
+			$up=$db->prepare("UPDATE tables SET table_pot= table_pot + :mise WHERE table_id=:id");
+			
+			$up->execute(array(
+						"mise"=>$_POST['mise'],
+						"id"=>$table['table_id']
 						));
 			
 			suivant($db,$table);
@@ -234,7 +243,7 @@ if ($joueur==$table['table_mvt']){
 
 						
 					if ($score_joueur==$maxi){ //Si le joueur a gagné
-						$gain=$coeff*$user['user_mise'];
+						$gain=$table['table_pot'];
 					}else{ // Le joueur a perdu
 						
 						defeat();

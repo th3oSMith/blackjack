@@ -22,6 +22,7 @@ while ($data=$query->fetch()){
 	$json['mise'][$data['user_joueur']]=$data['user_mise'];
 	$json['nick'][$data['user_joueur']]=$data['user_login'];
 	$json['pot'][$data['user_joueur']]=$data['user_pot'];
+	$json['debt'][$data['user_joueur']]=$data['user_debt'];
 
 	if ($data['user_id']==$_SESSION['id'] || $table['table_phase']==4){
 		

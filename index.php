@@ -16,8 +16,11 @@
     <span id="user_area_login"></span>
      - Pot :
     <span id="user_area_pot"></span>
-    jetons - 
+    UT - 
     </span>
+     Dette :
+    <span id="user_area_debt"></span>
+    jetons - 
     <a href="#" onClick="logout()">Déconnexion</a>
 			</span>    
     </div>
@@ -31,10 +34,12 @@
     session_start();
     require "php/functions.php";
     
+    
+    
     if (!(user_verified())){?>
 
 	<form id="connexion" action="javascript:connexion()">    
-    <label for="login" >Login : </label><input type="text" name="login" id="login"/> <br/>
+    <label for="login" >Login : </label><input type="text" value="<?php echo get_login(); ?>" name="login" id="login"/> <br/>
     <label for="password"></label>Mot de passe : <input type="password" name="password" id="password"/><br/>
     <span id="password_error">Login incorrect</span><br/>
     <input type="submit" value="Envoyer">
@@ -44,6 +49,9 @@
     <?php
 	}
     ?>
+    
+    
+    
     </div>
     
     

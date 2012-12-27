@@ -6,10 +6,14 @@ require "functions.php";
 $db=db_connect();
 $user=get_user($db);
 
+
+if ($user['user_debt']>=5000){die('{"error":2}');}
+
 $json['challenger']=0;
 
 $json['login']=$user['user_login'];
 $json['pot']=$user['user_pot'];
+$json['debt']=$user['user_debt'];
 $json['defi_sum']=$user["user_defi_sum"];
 
 
@@ -133,7 +137,8 @@ $delete->execute(array(
 $query=$db->prepare("SELECT user_login, user_id, user_pot
 					FROM online
 					LEFT JOIN users
-					ON users.user_id=online.online_user;"
+					ON users.user_id=online.online_user 
+					WHERE users.user_debt < 5000;"
 					);
 					
 $query->execute();
