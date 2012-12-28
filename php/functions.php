@@ -131,14 +131,14 @@ function resetChallenge($db, $perte) {
 		}
 }
 
-function get_tokens($user_id,$db){ // Montant algébrique à ajouter (gain ou perte)
+function get_tokens($user_id,$db){ //Pot du joueur
 	
 	$query = $db->prepare('SELECT user_pot FROM users WHERE user_id = :id');
 	$query->execute(array(
 			'id' => $user_id
 			));
 			
-	$pot = $query->fetch();
+	$pot = $query->fetch()['user_pot'];
 	return $pot;
 }
 
@@ -176,29 +176,48 @@ function update_tokens($user_id,$amount,$db){ // Montant algébrique à ajouter 
 }
 
 function immunity_cost($user_id,$immunity_start,$immunity_end,$db){	// Renvoie le coût de l'achat d'une nouvelle immunité
-	$query = $db->prepare('SELECT user_immunity_used WHERE user_id = :user_id');
+	
+	
+	$query = $db->prepare('SELECT user_immunity_used FROM users WHERE user_id = :user_id');
 	$query->execute(array(
 			'user_id' => $user_id
 			));
+			
 	$immunity_number = $query->fetch()['user_immunity_used'];
 	$cost = 2000 + 1000*$immunity_number;
+	
+	$purchase_cost=0;
+	
 	$i = $immunity_number;
 	while($i < ($immunity_number + $immunity_end  - $immunity_start)){
 		$cost = $cost + 1000*$i;
+		$purchase_cost+=$cost;
+		$i++;
 	}
-	return $cost;	// A VOIR : COÛT DE BASE D'UNE IMMUNITE ?
+	return $purchase_cost;	// A VOIR : COÛT DE BASE D'UNE IMMUNITE ?
 }
 
-function immunize($user_id,$immunity_hour_start,$db){
-	$query = $db->prepare('UPDATE users SET user_immunity_start = :immunity_start user_immunity_end = :immunity_end WHERE user_id = :user_id');
+/**
+ * 
+ * Règle de cout : on augmente le prix de 50% à chaque fois;
+ * 
+ **/
+
+
+function immunize($user_id,$immunity_hour_start,$immunity_hour_end,$db){
+	
+	
+	$query=$db->prepare('UPDATE users SET user_immunity_start = :immunity_start, user_immunity_end = :immunity_end WHERE user_id = :user_id');
 	if($immunity_hour_start < date("H")){
-		$immunity_start = date("Y-"). (date("d")+1) . date("-m ") . $immunity_hour_start . date(":i:00");
-		$immunity_end = date("Y-"). (date("d")+1) . date("-m ") . ($immunity_hour_start+1) . date(":i:00");	// Durée de l'immunité : 1 heure
+		$immunity_start = date("Y") . date("-m-"). (date("d")+1) ." ". $immunity_hour_start . date(":00:00");
+		$immunity_end = date("Y") . date("-m-"). (date("d")+1) ." ". ($immunity_hour_end) . date(":00:00");	
 	}
 	else{
-		$immunity_start = date("Y-d-m") . $immunity_hour_start . date(":i:00");
-		$immunity_end = date("Y-d-m") . ($immunity_hour_start+1) . date(":i:00");
+		$immunity_start = date("Y-m-d ") . $immunity_hour_start . date(":00:00");
+		$immunity_end = date("Y-m-d ") . ($immunity_hour_end) . date(":00:00");
 	}
+	
+	
 	$query->execute(array(
 			'immunity_start' => $immunity_start,
 			'immunity_end' => $immunity_end,
@@ -261,6 +280,19 @@ function get_login(){
 	}
 
 	return $login;	
+}
+
+
+function add_malus($level, $malus_quantity, $db){
+	
+	$query=$db->prepare("UPDATE etages SET `".$level."` = `".$level."` +:malus WHERE 1");
+	
+	$query->execute(array(
+			"malus"=>$malus_quantity
+			));
+			
+	
+	
 }
 
 ?>

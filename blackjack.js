@@ -38,6 +38,12 @@ $(document).ready(function() {
 		refreshUsers = window.setInterval(getOnlineUsers, reloadTimeMenu);
 		getOnlineUsers();
 		//refreshTables = window.setInterval(getTables, reloadTime);
+	}else{
+		
+		
+		refreshBoutique =  window.setInterval(getBoutique, reloadTimeMenu);
+		getBoutique();
+		$("#user_info").fadeIn();
 	}
 });
 
@@ -864,5 +870,94 @@ function launchChallenge(){
 		
 		
 	},'json');
+	
+}
+
+/*
+ * 
+ * Partie Boutique du script
+ * 
+ * */
+
+
+function immunityCost(){
+	
+	var immunity_start=$('#immunity_start').val();
+	var immunity_end=$('#immunity_end').val();
+	
+	var cost=2000+1000*immunities;
+	var purchase_cost=0;
+	
+	
+	var i=immunities;
+	
+	var max= parseInt(immunities) + parseInt(immunity_end)  - parseInt(immunity_start);
+	
+	
+	while(i < max){
+		cost = cost + 1000*i;
+		purchase_cost+=cost;
+		i++;
+	}
+	
+	$("#immunity_submit").val("Acheter (coût "+purchase_cost+")");
+}
+
+function buy(objet){
+	
+	switch(objet){
+	
+	
+	case "immunity":
+	$.get("php/buy.php",{ immunity_start : $("#immunity_start").val(), immunity_end : $("#immunity_end").val()}, function(data){
+		
+		if (data['error']==0){
+			
+			msg("Immunité achetée");
+			
+		}else if (data['error']==1){
+			
+			msg("Vous n'avez pas assez de jetons !");
+		}else{
+			
+			msg("T'aurais pas tapé n'importe quoi ?");
+		}
+		
+	},'json');
+	break;
+	
+	case "malus":
+	$.get("php/buy.php",{ malus_quantity : $("#malus_quantity").val(), level : $("#level").val()}, function(data){
+		
+		if (data['error']==0){
+			
+			msg("Malus acheté ! Merci de ta contribution");
+			
+		}else if (data['error']==1){
+			
+			msg("Vous n'avez pas assez de jetons !");
+		}else{
+			
+			msg("T'aurais pas tapé n'importe quoi ?");
+		}
+		
+	},'json');
+	
+	break;
+	
+}
+}
+
+function getBoutique(){
+	
+	$.getJSON("php/get-boutique.php",function(data){
+		
+		
+		displayLogin(data['login'], data['pot'], data['debt']);
+		immunities=data['immunities'];
+		
+		
+	});
+	
 	
 }

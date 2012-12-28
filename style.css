@@ -33,6 +33,17 @@
 
 }
 
+#content_shop{
+	
+	display:inline-block;
+	width:90%;
+	height:900px;
+	background: url('images/pool.png') repeat;
+	padding-top:20px;
+
+
+}
+
 #user_area{
 	
 	display:inline-block;
@@ -435,4 +446,28 @@ caption {
 }
 
 
+.shop_subpart {
 
+	border-radius:5px;
+	background: url("images/wood.png") repeat scroll 0% 0% transparent;
+	width:600px;
+	padding:5px;
+	display:none;
+	margin:auto;
+
+}
+
+.shop_subpart form {
+
+	margin-top:5px;
+
+}
+
+a {
+
+
+}
+
+a:visited {
+	color:black;
+}
