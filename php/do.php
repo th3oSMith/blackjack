@@ -15,7 +15,8 @@ $query->execute(array(
 				
 				
 ;
-$joueur=$query->fetch()['user_joueur'];
+$joueur=$query->fetch();
+$joueur=$joueur['user_joueur'];
 
 
 if ($joueur==$table['table_mvt']){
@@ -82,11 +83,12 @@ if ($joueur==$table['table_mvt']){
 						"id"=>$table['table_id']
 						));
 						
+			$tmp=$getID->fetch();
 			
 			$deal=$db->prepare("UPDATE users SET user_main= :main WHERE user_id= :id");
 			$deal->execute(array(
 							"main"=>$txtMain,
-							"id"=>$getID->fetch()['user_id']
+							"id"=>$tmp['user_id']
 							));							
 			
 		}
@@ -227,6 +229,8 @@ if ($joueur==$table['table_mvt']){
 			$score_joueur=score(unserialize($user['user_main']));
 			$maxi=$table['table_croupier'];
 			
+			
+			$duree=$user['user_mise'];
 			$gain=0;
 			$coeff=2;
 			
@@ -246,7 +250,7 @@ if ($joueur==$table['table_mvt']){
 						$gain=$table['table_pot'];
 					}else{ // Le joueur a perdu
 						
-						defeat();
+						defeat($log,$duree);
 						
 					}
 						
@@ -256,7 +260,7 @@ if ($joueur==$table['table_mvt']){
 			}else{ //Le joueur a perdu car brulé
 				
 				//Insérer le script lien avec Kettu pour trancher les gens
-				defeat();
+				defeat($log,$duree);
 				
 			}
 					
@@ -284,10 +288,13 @@ if ($joueur==$table['table_mvt']){
 			
 			$update=$db->prepare("UPDATE tables SET table_mvt=:mvt, table_phase=:phase WHERE table_id=:id");
 			
+			$mvtA=unserialize($table['table_save']);
+			$phaseA=unserialize($table['table_save']);
+			
 			$update->execute(array(
 						"id"=>$table['table_id'],
-						"mvt"=>unserialize($table['table_save'])[0],
-						"phase"=>unserialize($table['table_save'])[1]
+						"mvt"=>$mvtA[0],
+						"phase"=>$phaseA[1]
 						));
 
 			$up=$db->prepare("UPDATE online_table SET online_player1 = 10000000000, online_player2=10000000000, online_player3=10000000000 WHERE table_id = :id");
@@ -303,7 +310,8 @@ if ($joueur==$table['table_mvt']){
 			case -8:
 			
 			$timeout=time()-5;
-			$absent=unserialize($table['table_save'])[2];
+			$absent=unserialize($table['table_save']);
+			$absent=$absent[2];
 			
 			
 			$json['nb_joueur']=$table['table_nb_joueur'];

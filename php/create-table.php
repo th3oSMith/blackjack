@@ -25,7 +25,9 @@ if ($user['user_challenge_type']!=-1){
 				
 	//On les rajoute au challenger
 	
-	$target = unserialize($user["user_challenger"])["id"];
+	$target = unserialize($user["user_challenger"]);
+	$target=$target["id"];
+	
 	
 	//A modifier pour équilibrage de l'augmentation de la défisum
 	

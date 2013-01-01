@@ -1,17 +1,13 @@
 <?php
 
+include('log4php/Logger.php');
+ 
+$test = new DateTime("0000-00-00 00:00:00");
+$test=$test->getTimestapn
 
-require "functions.php";
-require "do.php";
+$hours=3;
 
 
-$db=db_connect();
-
-
-//echo score(unserialize("a:2:{i:0;a:2:{i:0;i:1;i:1;i:1;}i:1;a:2:{i:0;i:2;i:1;i:12;}}"));
-
-echo 		$_SESSION['maxi']=$maxi;
-echo		$_SESSION['j1']=$score[1];
-echo		$_SESSION['j2']=$score[2];
+echo $test->format('Y-m-d H:i:s') . "\n";
 
 ?>

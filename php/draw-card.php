@@ -17,8 +17,9 @@ if ($joueur['user_joueur']==$table['table_mvt']){
 	$query->execute(array(
 					"id"=>$_SESSION['id']
 					));
-					
-	$main=unserialize($query->fetch()['user_main']);
+	
+	$tmp=$query->fetch();
+	$main=unserialize($tmp['user_main']);
 	
 	$paquet=unserialize($table['table_cartes']);
 	

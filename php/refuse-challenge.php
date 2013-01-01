@@ -21,7 +21,8 @@ if ($user['user_challenge_type']!=-1){
 				
 	//On les rajoute au challenger
 	
-	$target = unserialize($user["user_challenger"])["id"];
+	$target = unserialize($user["user_challenger"]);
+	$target = $target["id"];
 	
 	$up=$db->prepare("UPDATE users SET user_pot = user_pot + :pot WHERE user_id=:id");
 	

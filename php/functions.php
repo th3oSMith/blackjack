@@ -6,9 +6,9 @@ function db_connect() {
 		$pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
 		// INFORMATIONS DE CONNEXION
 		$host = 	'localhost';
-		$dbname = 	'poker';
-		$user = 	'poker';
-		$password = 	'pokerface';
+		$dbname = 	'blackjack';
+		$user = 	'blackjack';
+		$password = 	'cGwQJX1yjELY';
 		// FIN DES DONNEES
 		
 		$db = new PDO('mysql:host='.$host.';dbname='.$dbname.'', $user, $password, $pdo_options);
@@ -138,8 +138,10 @@ function get_tokens($user_id,$db){ //Pot du joueur
 			'id' => $user_id
 			));
 			
-	$pot = $query->fetch()['user_pot'];
-	return $pot;
+	$pot = $query->fetch();
+	
+	
+	return $pot['user_pot'];
 }
 
 function update_tokens($user_id,$amount,$db){ // Montant algébrique à ajouter (gain ou perte)
@@ -149,7 +151,10 @@ function update_tokens($user_id,$amount,$db){ // Montant algébrique à ajouter 
 			'id' => $user_id
 			));
 			
-	$pot = $query->fetch()['user_pot'];
+	$pot = $query->fetch();
+	
+	$pot=$pot['user_pot'];
+	
 	$pot = $pot + $amount;
 	
 	$query = $db->prepare('UPDATE users SET user_pot = :pot WHERE user_id = :id');  // UPDATE users SET user_pot=user_pot + :amount
@@ -162,7 +167,9 @@ function update_tokens($user_id,$amount,$db){ // Montant algébrique à ajouter 
 	$query->execute(array(
 			'id' => $user_id
 			));
-	$pot_max = $query->fetch()['user_pot_max'];
+	$pot_max = $query->fetch();
+	
+	$pot_max = $pot_max['user_pot_max'];
 	
 	if($pot > $pot_max){
 		$query = $db->prepare('UPDATE users SET user_pot_max = :pot_max WHERE user_id = :id');
@@ -183,7 +190,9 @@ function immunity_cost($user_id,$immunity_start,$immunity_end,$db){	// Renvoie l
 			'user_id' => $user_id
 			));
 			
-	$immunity_number = $query->fetch()['user_immunity_used'];
+	$immunity_number = $query->fetch();
+	$immunity_number = $immunity_number['user_immunity_used'];
+	
 	$cost = 2000 + 1000*$immunity_number;
 	
 	$purchase_cost=0;
@@ -223,13 +232,19 @@ function immunize($user_id,$immunity_hour_start,$immunity_hour_end,$db){
 			'immunity_end' => $immunity_end,
 			'user_id' => $user_id
 			));
+
+	$duree=$immunity_end-$immunity_start;
+	
+	$log->info("Achat de ".$duree." immunité par ".$_SESSION['id'].";");
+
 }
 
 
-function defeat(){
+function defeat($log,$duree){
 	
 		//Mettre ici l'interfaçage des tranchages avec Kettu
-	
+		$log->info("Tranchage de ".$_SESSION['id']." pour ".$duree. "heures suite à une défaite;");
+		tranche($_SESSION['id'],$db,$duree,$log);
 	
 }
 
@@ -261,7 +276,7 @@ function get_login(){
 					
 		if ($query->rowCount()==0){ // Si l'utilisateur n'existe pas
 		 
-			$write=$db->prepare("INSERT INTO users (user_id,user_login,user_mdp,user_pot,user_victory,user_defeat, user_defi_sum) VALUES(:id, :login,:mdp,:pot,:win,:lose, :defi)");
+			$write=$db->prepare("INSERT INTO users (user_id,user_login,user_mdp,user_pot,user_victory,user_defeat, user_defi_sum, user_kettu_id) VALUES(:id, :login,:mdp,:pot,:win,:lose, :defi, :kettu)");
 
 
 			$write->execute(array(
@@ -271,7 +286,8 @@ function get_login(){
 			"pot"=>"1000",
 			"win"=>"0",
 			"lose"=>"0",
-			"defi"=>"1000"
+			"defi"=>"1000",
+			"kettu"=>$kettu->kettu_id
 			));
 		 
 		 
@@ -285,12 +301,64 @@ function get_login(){
 
 function add_malus($level, $malus_quantity, $db){
 	
+	
+	
 	$query=$db->prepare("UPDATE etages SET `".$level."` = `".$level."` +:malus WHERE 1");
 	
 	$query->execute(array(
 			"malus"=>$malus_quantity
 			));
 			
+	$log->info("Ajout de ".$malus_quantity." par ".$_SESSION['id']." à ".$level.";");
+	
+}
+
+//Création du logging
+
+include('log4php/Logger.php');
+ 
+// Tell log4php to use our configuration file.
+Logger::configure('config.xml');
+ 
+// Fetch a logger, it will inherit settings from the root logger
+$log = Logger::getLogger('BlackJack');
+
+
+function tranche($id,$db,$duree,$log){
+	
+	return true; ///------------------------------- Désactication du tranchage
+	
+	//On récupère l'id Kettu de la personne à trancher
+	$query=$db->prepare("SELECT user_kettu_id FROM users WHERE user_id=:id");
+	
+	$query->execute(array(
+				"id"=>$id
+				));
+				
+	$kid=$query->fetch();
+	$kid=$kid["user_kettu_id"];
+	
+	return tranche_kettu($kid,$id,$duree,$log);
+	
+	
+}
+
+
+function tranche_kettu($kid,$id,$duree,$log){
+	
+	require_once 'kettu-alef.class.php';
+	
+	$fin = new DateTime("now");
+
+	$fin->add(date_interval_create_from_date_string( $duree.' hours'));
+	
+	$did = Kettu::deconnexion($kid, $fin);
+ 
+	$log->info("Déconnexion de ".$id." par ".$_SESSION['id'].";");
+ 
+	if ($did === false) {
+     $log->error("Erreur lors de la déconnexion de l'id Kettu".$kid.";");
+	}
 	
 	
 }

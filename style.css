@@ -302,6 +302,15 @@
 
 }
 
+#menu_tranche{
+
+	width:300px;
+	margin-left:-150px;
+	height:100px;
+	margin-top:-50px;
+
+}
+
 #answer_duel{
 
 	width:200px;
@@ -470,4 +479,10 @@ a {
 
 a:visited {
 	color:black;
+}
+
+#user_list{
+	
+	margin:auto;
+
 }

@@ -14,6 +14,8 @@ var target=null;
 var waitReply;
 var challenger;
 var defi_sum;
+var user_pot;
+var target;
 
 
 
@@ -51,7 +53,7 @@ $(document).ready(function() {
 
 function logout(){
 	
-	$.getJSON("php/logout",function(data){
+	$.getJSON("php/logout.php",function(data){
 		
 		window.location.reload();		
 		
@@ -98,7 +100,7 @@ function getOnlineUsers(){
 				}	
 			}else{
 				
-					$('#users tr:last').after("<tr><td>Vous ne pouvez plus vous endettez d'avantage</td><td></td></tr>");		
+					$('#users tr:last').after("<tr><td>Vous ne pouvez plus vous endetter d'avantage</td><td></td></tr>");		
 				
 				}
 		
@@ -543,6 +545,13 @@ function message(msg,temp){
 function effacer(player){
 	
 	
+	$.getJSON("php/abandon.php", function(data){
+		
+		
+		
+		
+		})	
+	
 	msg("Votre adversaire est parti comme un lache !");
 	setTimeout(function() {
 				window.location.reload();		
@@ -555,7 +564,7 @@ function effacer(player){
 
 function kick(){
 	
-	msg("Vous ne pouvez plus vous endettez d'avantage");
+	msg("Vous ne pouvez plus vous endetter d'avantage");
 	setTimeout(function() {
 				window.location.reload();		
 				},2000);
@@ -569,7 +578,7 @@ function quitMsg(){
 	$("#message_fenetre.fenetre").fadeOut();
 	$("#rules.fenetre").fadeOut();
 	$("#menu_duel.fenetre").fadeOut();
-	
+	$("#menu_tranche.fenetre").fadeOut();
 }
 
 function msg(txt,temp){
@@ -597,6 +606,7 @@ function displayLogin(login, pot,debt){
 	
 	$("#user_area_login").html(login);
 	$("#user_area_pot").html(pot);
+	user_pot=pot;
 	$("#user_area_debt").html(debt);
 	}
 
@@ -959,5 +969,70 @@ function getBoutique(){
 		
 	});
 	
+	
+}
+
+function getPlayers(){
+	var name=$("#user_cut").val();
+	
+	if (name.length>2){
+	
+	$.get("php/get-players.php",{name : name},function(data){
+		
+		$("#user_list_span").html(data);
+		
+	});
+	
+	}else{
+		
+		$("#user_list_span").html("");
+	}
+}
+
+function buyTranche(id){
+	
+	html="";
+	target=id;
+	
+	for (x=0;x<user_pot/(10000);x++){//Prix du tranchage
+		
+		html+="<OPTION VALUE="+x+">"+x+"</OPTION>";
+		
+	} 
+	
+	$("#select_tranche").html(html);
+	
+	$("#fond").fadeIn();
+	$("#menu_tranche.fenetre").fadeIn();
+	
+}
+
+function displayCost(){
+	
+	$("#submitTranche").val("Valider (coût "+$("#select_tranche").val()*10000+')');
+	
+}
+
+function setTranche(){
+	
+	$("#menu_tranche.fenetre").fadeOut();
+	$.get("php/set-tranche.php", {duree : $("#select_tranche").val(), id : target}, function(data){
+		
+	switch(data['error']){
+		
+		case 0:
+		msg("Méfait accompli !");
+		break;
+		
+		case 1:
+		msg("Vous n'avez pas assez d'argent");
+		break;
+		
+		case 3:
+		msg("Votre ennemi était protégé...");
+		break;
+	}
+		
+		},'json');
 	
 }

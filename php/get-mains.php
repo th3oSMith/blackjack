@@ -6,7 +6,7 @@ $db=db_connect();
 $table=get_table($db);
 $user=get_user($db);
 
-$query=$db->prepare("SELECT user_main, user_joueur,user_mise,user_login,user_pot,user_id FROM users WHERE user_table=:table");
+$query=$db->prepare("SELECT user_main, user_joueur,user_mise,user_login,user_pot,user_id, user_debt FROM users WHERE user_table=:table");
 
 $query->execute(array(
 			"table"=>$table['table_id']
@@ -30,7 +30,8 @@ while ($data=$query->fetch()){
 		
 		}else{
 		
-		$json['main'][$data['user_joueur']][0]=unserialize($data['user_main'])[0];
+		$json['main'][$data['user_joueur']][0]=unserialize($data['user_main']);
+		$json['main'][$data['user_joueur']][0]=$json['main'][$data['user_joueur']][0][0];
 		$json['main'][$data['user_joueur']][1]=array(9,9);
 			
 		}
@@ -129,8 +130,8 @@ if ($query->rowCount()!=0 && $table['table_phase']!=-8 && $table['table_phase']!
 					"table"=>$table['table_id']
 					));
 					
-		$owner=$query->fetch()['user_id'];
-		
+		$owner=$query->fetch();
+		$owner=$owner['user_id'];
 		
 		
 		}
