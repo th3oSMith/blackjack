@@ -112,11 +112,15 @@
 	
 	
 	</div>
-	<div id="actions"><input type="submit" id="start" onClick=startTable() value="Lancer la partie"/>
+	<div id="actions">
+	<span id="actions_text"></span><br/>	
+	<span id="actions_buttons">
+	<input type="submit" id="start" onClick=startTable() value="Lancer la partie"/>
 	<input type="submit" id="carte" onClick="jouer(1)" value="Carte"/>
 	<input type="submit" id="double" onClick="jouer(2)" value="Double"/>
 	<input type="submit" id="reste"  onCLick="jouer(3)" value="Reste"/>
 	<input type="submit" id="reset"  onCLick="reset()" value="Nouvelle partie"/>
+	</span>
 	<br/>
 	<input type="submit" id="rules_input"  onCLick="rules()" value="Afficher les règles"/>
 	

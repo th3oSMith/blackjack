@@ -240,7 +240,7 @@ function immunize($user_id,$immunity_hour_start,$immunity_hour_end,$db){
 }
 
 
-function defeat($log,$duree){
+function defeat($log,$duree,$db){
 	
 		//Mettre ici l'interfaçage des tranchages avec Kettu
 		$log->info("Tranchage de ".$_SESSION['id']." pour ".$duree. "heures suite à une défaite;");

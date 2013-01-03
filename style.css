@@ -26,7 +26,7 @@
 	
 	display:inline-block;
 	width:90%;
-	height:680px;
+	height:700px;
 	background: url('images/pool.png') repeat;
 	padding-top:20px;
 
@@ -182,7 +182,7 @@
 #actions {
 
 	width:95%;
-	height:60px;
+	height:80px;
 	background: url('images/wood.png');
 	color : white;
 	padding-top:10px;

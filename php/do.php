@@ -250,7 +250,7 @@ if ($joueur==$table['table_mvt']){
 						$gain=$table['table_pot'];
 					}else{ // Le joueur a perdu
 						
-						defeat($log,$duree);
+						defeat($log,$duree,$db);
 						
 					}
 						
@@ -260,7 +260,7 @@ if ($joueur==$table['table_mvt']){
 			}else{ //Le joueur a perdu car brulé
 				
 				//Insérer le script lien avec Kettu pour trancher les gens
-				defeat($log,$duree);
+				defeat($log,$duree,$db);
 				
 			}
 					

@@ -358,6 +358,12 @@ function listen(){
 
 function getMains(){
 	
+	if (joueur==Math.abs(mvt)){
+		$("#actions_buttons").fadeIn();
+	}else {
+		$("#actions_buttons").fadeOut();
+	}
+	
 	$.getJSON("php/get-mains.php",function(data){
 			
 			
@@ -372,7 +378,7 @@ function getMains(){
 				
 				if (mvt==x){
 					
-					
+					$("#actions_text").html('Tour de '+data['nick'][x]);
 					nick="<b>"+data['nick'][x]+"</b>";
 					
 				}
