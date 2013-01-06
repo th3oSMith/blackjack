@@ -15,7 +15,7 @@ if (isset($_POST['login'])){
 	$verif=$db->prepare("SELECT user_id FROM users WHERE user_login=:login AND user_mdp=:mdp");
 	$verif->execute(array(
 			"login"=>$_POST['login'],
-			"mdp"=>sha1($_POST['password'])
+			"mdp"=>md5($_POST['password'])
 			));
 			
 	$count=$verif->rowCount();

@@ -213,7 +213,7 @@ function immunity_cost($user_id,$immunity_start,$immunity_end,$db){	// Renvoie l
  **/
 
 
-function immunize($user_id,$immunity_hour_start,$immunity_hour_end,$db){
+function immunize($user_id,$immunity_hour_start,$immunity_hour_end,$db,$log){
 	
 	
 	$query=$db->prepare('UPDATE users SET user_immunity_start = :immunity_start, user_immunity_end = :immunity_end WHERE user_id = :user_id');
@@ -291,7 +291,6 @@ function get_login(){
 			));
 		 
 		 
-		 
 		}
 	}
 
@@ -299,14 +298,15 @@ function get_login(){
 }
 
 
-function add_malus($level, $malus_quantity, $db){
+function add_malus($level, $malus_quantity, $db,$log){
 	
 	
 	
-	$query=$db->prepare("UPDATE etages SET `".$level."` = `".$level."` +:malus WHERE 1");
+	$query=$db->prepare("UPDATE etages SET malus=:malus WHERE level=:level");
 	
 	$query->execute(array(
-			"malus"=>$malus_quantity
+			"malus"=>$malus_quantity,
+			"level"=>$level
 			));
 			
 	$log->info("Ajout de ".$malus_quantity." par ".$_SESSION['id']." à ".$level.";");
@@ -325,21 +325,46 @@ $log = Logger::getLogger('BlackJack');
 
 
 function tranche($id,$db,$duree,$log){
-	
-	return true; ///------------------------------- Désactication du tranchage
-	
+		
 	//On récupère l'id Kettu de la personne à trancher
-	$query=$db->prepare("SELECT user_kettu_id FROM users WHERE user_id=:id");
+	$query=$db->prepare("SELECT user_kettu_id, user_did FROM users WHERE user_id=:id");
 	
 	$query->execute(array(
 				"id"=>$id
 				));
 				
-	$kid=$query->fetch();
-	$kid=$kid["user_kettu_id"];
+	$kidData=$query->fetch();
+	$kid=$kidData["user_kettu_id"];
+	$did=$kidData["user_did"];
 	
-	return tranche_kettu($kid,$id,$duree,$log);
+	//Si le joueur n'est pas déjà tranché on le tranche
 	
+	if ($did==0){
+	
+		$did = tranche_kettu($kid,$id,$duree,$log);
+	}
+	
+	if ($did != false){
+		
+		$up=$db->prepare("UPDATE users SET user_did = :did, user_disconnect_start = :start, user_disconnect_end = :end WHERE user_id=:id");
+		
+		$end=new DateTime("now");
+		$now=new DateTime("now");
+			
+			
+		$end->add(date_interval_create_from_date_string( $duree.' hours'));
+		
+		$up->execute(array(
+					"did"=>$did,
+					"start"=>$now->format('Y-m-d H:i:s'),
+					"end"=>$end->format('Y-m-d H:i:s'),
+					"id"=>$id
+					));
+		
+		return true;
+	}
+	
+	return false;
 	
 }
 
@@ -354,13 +379,51 @@ function tranche_kettu($kid,$id,$duree,$log){
 	
 	$did = Kettu::deconnexion($kid, $fin);
  
-	$log->info("Déconnexion de ".$id." par ".$_SESSION['id'].";");
+	$log->info("Déconnexion de ".$id." par ".$_SESSION['id']." avec l'id : ".$did.";");
  
 	if ($did === false) {
      $log->error("Erreur lors de la déconnexion de l'id Kettu".$kid.";");
 	}
 	
+	return $did;
 	
 }
 
+function detranche($id,$db,$log){
+	
+	
+	$query=$db->prepare("SELECT user_did FROM users WHERE user_id=:id");
+	
+	$query->execute(array(
+				"id"=>$id
+				));
+				
+	$did=$query->fetch();
+	$did=$did['user_did'];
+	
+	
+	if(detranche_kettu($did,$log)){
+		$log->info("Reconnexion de ".$id.";");
+	}
+	else{
+		$log->error("Impossible de reconnecter ".$id.";");
+	}
+	
+	$up=$db->prepare("UPDATE users SET user_did=0 WHERE user_id=:id");
+	
+	$up->execute(array(
+				"id"=>$id
+				));
+	
+	
+}
+
+function detranche_kettu($did, $log){
+	
+	require_once 'kettu-alef.class.php';
+	
+	return Kettu::reconnexion($did);
+
+	
+}
 ?>
