@@ -9,7 +9,7 @@ $table = get_table($db);
 $user=get_user($db);
 $json['error']=1;
 $history=unserialize($user['user_history']);
-$delay=20;
+$delay=600;
 
 if ($history[$_POST['id']]>time()-$delay){
 		$json['error']=2;

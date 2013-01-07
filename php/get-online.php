@@ -9,6 +9,14 @@ $user=get_user($db);
 
 if ($user['user_debt']>=5000){die('{"error":2}');}
 
+$now=new DateTime("now");
+$start=new DateTime($user['user_disconnect_start']);
+$end=new DateTime($user['user_disconnect_end']);
+
+
+if ($now->getTimestamp()>$start->getTimestamp() && $now->getTimestamp()<$end->getTimestamp()){die('{"error":3}');}
+
+
 $json['challenger']=0;
 
 $json['login']=$user['user_login'];

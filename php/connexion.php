@@ -29,6 +29,22 @@ if (isset($_POST['login'])){
 }
 }
 
+$query=$db->prepare("SELECT user_disconnect_start, user_disconnect_end FROM users where user_login = :login");
+
+$query->execute(array(
+			"login"=>$_POST['login']
+			));
+			
+$user=$query->fetch();
+
+$now=new DateTime("now");
+$start=new DateTime($user['user_disconnect_start']);
+$end=new DateTime($user['user_disconnect_end']);
+
+
+if ($now->getTimestamp()>$start->getTimestamp() && $now->getTimestamp()<$end->getTimestamp()){$json['error']=2;}
+
+
 echo json_encode($json);
 
 

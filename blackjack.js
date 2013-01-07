@@ -24,13 +24,17 @@ function connexion(){
 	$.post("php/connexion.php",{ login : $("#login").val(), password : $("#password").val()}, function(data){
 		
 		if (data['error']==0){	
+			$("#connexion_div").fadeOut();
 			$("#connexion").fadeOut();
 			connexionTest=true;
 			$("#user_info").fadeIn();
 		}
-		else{
+		else if (data['error']==1){
 			$("#password_error").fadeIn();
 		}
+		else{
+			$("#tranchage").fadeIn();
+			}
 	},'json');
 }
 
@@ -98,11 +102,16 @@ function getOnlineUsers(){
 					
 					$('#users tr:last').after('<tr><td class="td_joueur"><a href="#" onClick=duel('+data['list'][id]['id']+',"'+data['list'][id]['login']+'")>'+data['list'][id]['login']+'</a></td><td>'+data['list'][id]['pot']+' UT</td></tr>');
 				}	
-			}else{
-				
+			}else if (data['error']==2){
+					
+					
 					$('#users tr:last').after("<tr><td>Vous ne pouvez plus vous endetter d'avantage</td><td></td></tr>");		
 				
-				}
+				}else
+				{
+					
+					$('#users tr:last').after("<tr><td>Attends un peu ! ton tranchage va arriver</td><td></td></tr>");
+					}
 		
 			
 			displayLogin(data['login'], data['pot'], data['debt']);
@@ -243,7 +252,7 @@ function listen(){
 					
 					
 					message("");
-					bet("Miser ?");
+					bet("Combien d'heures voulez vous miser? ");
 				}
 			break;
 			
@@ -291,11 +300,11 @@ function listen(){
 				
 				if (data['gain']>0){
 				
-				message("Partie terminée - Vous avez gagné "+data["gain"]+" jetons");
+				msg("Partie terminée - Vous avez gagné "+data["gain"]+" jetons");
 				}
 				else if (data['gain']<0) {
 					
-					message("Partie terminée - Vous avez perdu "+Math.abs(data["gain"])+" jetons");
+					msg("Partie terminée - Vous avez perdu "+Math.abs(data["gain"])+" jetons");
 				}
 				else {
 					
@@ -393,7 +402,7 @@ function getMains(){
 				}
 				
 				$("#nick"+x).html(nick);
-				$("#mise"+x).html(data['mise'][x]);
+				$("#mise"+x).html(data['mise'][x]/100);
 				$("#pot"+x).html(data['pot'][x]);
 
 			
@@ -570,7 +579,7 @@ function effacer(player){
 
 function kick(){
 	
-	msg("Vous ne pouvez plus vous endetter d'avantage");
+	//msg("Vous ne pouvez plus vous endetter d'avantage");
 	setTimeout(function() {
 				window.location.reload();		
 				},2000);
@@ -585,6 +594,7 @@ function quitMsg(){
 	$("#rules.fenetre").fadeOut();
 	$("#menu_duel.fenetre").fadeOut();
 	$("#menu_tranche.fenetre").fadeOut();
+	$("#malus_fenetre.fenetre").fadeOut();
 }
 
 function msg(txt,temp){
@@ -613,7 +623,6 @@ function displayLogin(login, pot,debt){
 	$("#user_area_login").html(login);
 	$("#user_area_pot").html(pot);
 	user_pot=pot;
-	$("#user_area_debt").html(debt);
 	}
 
 function bet(txt){
@@ -689,6 +698,12 @@ function rules(){
 	
 }
 
+function maluses(){
+	
+	$("#fond").fadeIn();
+	$("#malus_fenetre.fenetre").fadeIn();
+	
+}
 
 function score(main)
 {
@@ -759,7 +774,7 @@ function launchDuel(){
 			
 			if (data['error']==2){
 				
-				msg("Il a déjà dit non !");
+				msg("Vous avez déjà joué avec cette personne !");
 				
 			}else{
 			
@@ -901,7 +916,7 @@ function immunityCost(){
 	var immunity_start=$('#immunity_start').val();
 	var immunity_end=$('#immunity_end').val();
 	
-	var cost=2000+1000*immunities;
+	var cost=300+150*immunities;
 	var purchase_cost=0;
 	
 	
@@ -911,7 +926,7 @@ function immunityCost(){
 	
 	
 	while(i < max){
-		cost = cost + 1000*i;
+		cost = cost + 150*i;
 		purchase_cost+=cost;
 		i++;
 	}
@@ -1000,7 +1015,7 @@ function buyTranche(id){
 	html="";
 	target=id;
 	
-	for (x=0;x<user_pot/(10000);x++){//Prix du tranchage
+	for (x=0;x<user_pot/(300);x++){//Prix du tranchage
 		
 		html+="<OPTION VALUE="+x+">"+x+"</OPTION>";
 		
@@ -1015,7 +1030,7 @@ function buyTranche(id){
 
 function displayCost(){
 	
-	$("#submitTranche").val("Valider (coût "+$("#select_tranche").val()*10000+')');
+	$("#submitTranche").val("Valider (coût "+$("#select_tranche").val()*300+')');
 	
 }
 
@@ -1023,6 +1038,7 @@ function setTranche(){
 	
 	$("#menu_tranche.fenetre").fadeOut();
 	$.get("php/set-tranche.php", {duree : $("#select_tranche").val(), id : target}, function(data){
+		
 		
 	switch(data['error']){
 		

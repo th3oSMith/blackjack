@@ -31,7 +31,7 @@ if ($user['user_challenge_type']!=-1){
 	
 	//A modifier pour équilibrage de l'augmentation de la défisum
 	
-	$up=$db->prepare("UPDATE users SET user_pot = user_pot - :pot , user_defi_sum = user_defi_sum +200 WHERE user_id=:id");
+	$up=$db->prepare("UPDATE users SET user_pot = user_pot - :pot , user_defi_sum = user_defi_sum +5 WHERE user_id=:id");
 	
 	$up->execute(array(
 				"id"=>$target,

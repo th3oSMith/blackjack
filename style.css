@@ -6,10 +6,21 @@
 	border-radius:8px;
 }
 
-#password_error{
+#password_error, #tranchage_error{
 
 	display:none;
 	color:red;
+
+}
+
+#speach{
+
+	display:inline-block;
+	background: url('images/wood_light.png') repeat;
+	border:1px solid black;
+	padding:5px;
+	border-radius:20px;
+	margin-bottom:10px;
 
 }
 
@@ -113,8 +124,11 @@
 
 #tables_div{
 
-	width:60%;
+	width:55%;
 	float:left;
+	background: url('images/wood_light.png') repeat;
+	margin-left:5px;
+	border: 1px solid black;
 
 }
 
@@ -338,6 +352,15 @@
 
 }
 
+#malus_fenetre{
+
+	width:250px;
+	margin-left:-125px;
+	height:500px;
+	margin-top:-250px;
+
+}
+
 #prompt_text{
 
 
@@ -346,7 +369,7 @@
 
 }
 
-#prompt input {
+#prompt input , #help{
 
 	border-radius:5px;
 	border:1px solid black;

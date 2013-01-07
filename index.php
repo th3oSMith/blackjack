@@ -18,9 +18,6 @@
     <span id="user_area_pot"></span>
     UT - 
     </span>
-     Dette :
-    <span id="user_area_debt"></span>
-    jetons - 
     <a href="#" onClick="logout()">Déconnexion</a>
 			</span>    
     </div>
@@ -37,11 +34,17 @@
     
     
     if (!(user_verified())){?>
-
+	<div id="speach"><p>Tu es sur le point de rentrer au casino. Le login et le mot de passe sont ceux du 3w (prénom.nom).<br/> La première connexion doit obligatoirement se faire depuis ta chambre.</p>
+	<p>En te connectant à ton compte tu acceptes d'être tranché (eh oui c'est le jeu).</p>
+	<p>Si jamais tu en as marre de jouer tu peux demander au rézo de supprimer ton compte.</p>
+	<p>Bon Jeu.</p>
+	<p>Le Jeu est optimisé pour firefox, les autres navigateurs risquent de rencontrer quelques erreurs.</p>
+	</div>
+	<br/>
 	<form id="connexion" action="javascript:connexion()">    
     <label for="login" >Login : </label><input type="text" value="<?php echo get_login(); ?>" name="login" id="login"/> <br/>
     <label for="password"></label>Mot de passe : <input type="password" name="password" id="password"/><br/>
-    <span id="password_error">Login incorrect</span><br/>
+    <span id="password_error">Login incorrect</span><span id="tranchage_error">Tranchage en cours...</span><br/>
     <input type="submit" value="Envoyer">
     </form>
     <script language="javascript">connexionTest=false;</script>
@@ -57,12 +60,18 @@
     
     <span id="table_choice" >
     
-    <div id="tables_div" style='display:none'>
-    <table border="1" id="tables">
-    <caption><b>Tables de jeu</b></caption>
-    <tbody id="tables_list" ><tr><td></td></tr></tbody>
-    <tfoot><tr><td><input type="text" onChange=createTable() id="newTable"><span id="nameExists" style="display:none; color:red;"><br/>Nom déjà pris</span></td><td><a href="#" onClick=createTable()>Créer</a></td></tr></tfoot>
-    </table>
+    <div id="tables_div">
+    <p>Unplug te souhaite la bienvenue au casino.</p>
+    <p>Ici tu pourras miser des heures de tranchage lors de parties de Black Jack.</p>
+    <p>Si tu gagnes tu récoltera des UT que tu pourras utiliser à la <a href="shop.php">boutique</a> afin de trancher tes ennemis, ou couvrir tes arrières.</p>
+    <p>Mais prends garde à toi ! Si jamais tu perds tu sera tranché du montant de ta mise, et la sanction prend effet immédiatement !</p>
+    <p>Bien entendu si tu gagnes c'est ton adversaire qui est tranché !</p>
+    <p>Il y a deux mode de jeu :</p>
+    <ul>
+    <li><b>Duel</b> : ne coûte rien à lancer ou à refuser</li>
+    <li><b>Défi</b> : coûte de plus en plus cher à lancer. Si l'adversaire accepte le défi il reçoit l'argent, s'il refuse c'est lui qui doit payer. </li>
+    </ul>
+    <h3><a href="shop.php">Boutique</a></h3>
     </div>
     
     
@@ -177,7 +186,7 @@
     
     <li>Cartes simples : valeur faciale</li>
     <li>Figure : 10 points</li>
-    <li>As : 11 ou 1 point</li>
+    <li>As : 11 ou 1 point (en fonction de ce qui avantage le joueur)</li>
     
     </ul>
 
@@ -187,12 +196,12 @@
 	<ul>
 	<li>Carte : demander une nouvelle carte</li>
 	<li>Double : demander une carte, doubler la mise et passer au joueur suivant</li>
-	<li>Reste : paser au joueur suivant</li>
+	<li>Reste : passer au joueur suivant</li>
 	
 	</ul>
 	
 	<br/>
-	<p>À l'issue de la partie les joueurs ayant plus de points que le croupier remporte le double de leur mise</p>
+	<p>À l'issue de la partie les joueurs ayant le plus de points sans dépasser 21 gagne.</p>
 	
     </div>
     

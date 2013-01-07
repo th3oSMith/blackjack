@@ -193,13 +193,13 @@ function immunity_cost($user_id,$immunity_start,$immunity_end,$db){	// Renvoie l
 	$immunity_number = $query->fetch();
 	$immunity_number = $immunity_number['user_immunity_used'];
 	
-	$cost = 2000 + 1000*$immunity_number;
+	$cost = 300 + 150*$immunity_number;
 	
 	$purchase_cost=0;
 	
 	$i = $immunity_number;
 	while($i < ($immunity_number + $immunity_end  - $immunity_start)){
-		$cost = $cost + 1000*$i;
+		$cost = $cost + 150*$i;
 		$purchase_cost+=$cost;
 		$i++;
 	}
@@ -233,7 +233,7 @@ function immunize($user_id,$immunity_hour_start,$immunity_hour_end,$db,$log){
 			'user_id' => $user_id
 			));
 
-	$duree=$immunity_end-$immunity_start;
+	$duree=$immunity_hour_end-$immunity_hour_start;
 	
 	$log->info("Achat de ".$duree." immunité par ".$_SESSION['id'].";");
 
@@ -245,6 +245,7 @@ function defeat($log,$duree,$db){
 		//Mettre ici l'interfaçage des tranchages avec Kettu
 		$log->info("Tranchage de ".$_SESSION['id']." pour ".$duree. "heures suite à une défaite;");
 		tranche($_SESSION['id'],$db,$duree,$log);
+		session_destroy();
 	
 }
 
@@ -283,10 +284,10 @@ function get_login(){
 			"id"=>'',
 			"login"=>$login,
 			"mdp"=>$kettu->md5_password,
-			"pot"=>"1000",
+			"pot"=>"200",
 			"win"=>"0",
 			"lose"=>"0",
-			"defi"=>"1000",
+			"defi"=>"10",
 			"kettu"=>$kettu->kettu_id
 			));
 		 
@@ -302,7 +303,7 @@ function add_malus($level, $malus_quantity, $db,$log){
 	
 	
 	
-	$query=$db->prepare("UPDATE etages SET malus=:malus WHERE level=:level");
+	$query=$db->prepare("UPDATE levels SET malus=:malus WHERE level=:level");
 	
 	$query->execute(array(
 			"malus"=>$malus_quantity,

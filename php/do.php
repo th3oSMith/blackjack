@@ -119,7 +119,7 @@ if ($joueur==$table['table_mvt']){
 			$miser=$db->prepare("UPDATE users SET user_debt=user_debt+:mise, user_mise=:mise WHERE user_id = :id");
 			
 			$miser->execute(array(
-						"mise"=>$_POST['mise'],
+						"mise"=>$_POST['mise']*100,
 						"id"=>$_SESSION['id']
 						));
 						
@@ -230,7 +230,7 @@ if ($joueur==$table['table_mvt']){
 			$maxi=$table['table_croupier'];
 			
 			
-			$duree=$user['user_mise'];
+			$duree=$user['user_mise']/100;
 			$gain=0;
 			$coeff=2;
 			
@@ -248,6 +248,7 @@ if ($joueur==$table['table_mvt']){
 						
 					if ($score_joueur==$maxi){ //Si le joueur a gagné
 						$gain=$table['table_pot'];
+						$log->info("Victoire du joueur ".$_SESSION['id']);
 					}else{ // Le joueur a perdu
 						
 						defeat($log,$duree,$db);

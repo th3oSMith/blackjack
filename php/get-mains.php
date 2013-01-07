@@ -157,12 +157,26 @@ if ($query->rowCount()!=0 && $table['table_phase']!=-8 && $table['table_phase']!
 					
 		//On desinscrit le joueur de la table
 		
+		$query=$db->prepare("SELECT user_mise,user_id FROM users WHERE user_table=:id AND user_joueur=:joueur");
+		$query->execute(array(
+					"id"=>$table['table_id'],
+					"joueur"=>$joueur
+					));
+					
+		$miseData=$query->fetch();
+		$mise=$miseData['user_mise'];
+		$idJ=$miseData['user_id'];
+		
+		tranche($idJ,$db,$mise/100,$log);
+		
 		$up=$db->prepare("UPDATE users SET user_table = NULL WHERE user_table=:id AND user_joueur=:joueur");
 		
 		$up->execute(array(
 					"id"=>$table['table_id'],
 					"joueur"=>$joueur
 					));
+					
+		
 		
 	}
 
